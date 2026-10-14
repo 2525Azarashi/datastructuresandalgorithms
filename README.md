@@ -1,21 +1,44 @@
-```txt
-npm install
-npm run dev
+# DS&A Lab — データ構造とアルゴリズム 学習ラボ
+
+関西学院大学「データ構造とアルゴリズム」（作元 雄輔 先生）の講義内容を、**動かして・触って・直感で理解する**ための非公式インタラクティブ学習サイト。講義資料が届くたびに 1 回分ずつ拡張していく。
+
+## デザインコンセプト — "Blueprint of computation"
+- 黒地の設計図グリッド＋紙白のタイポ。色は**意味**を持つ: 琥珀 = いま注目（ポインタ）、シアン = 訪問済み、ライム = 発見・正解、ローズ = 削除・失敗
+- ヒーロー: 同じ 15 個の数が「配列 → スタック → 循環キュー → 2分木 → グラフ」に変形し、琥珀のパルスが辺を辿る（＝規則が変わればデータ構造が変わる）
+- 各回は「要点（TL;DR）→ 可視化ラボ → 解説 → 類題」の順。全ラボは ← → / Space でステップ再生
+
+## 実装済みの内容
+| 回 | テーマ | 主なラボ |
+|---|---|---|
+| 1 | 計算とアルゴリズム | 互除法ステッパ（長方形タイル＋行ごと実行回数）、線形探索の操作回数カウンタ、最悪/平均/最良の比較、部分和 2ⁿ グリッド、指数爆発 |
+| 2 | 漸近記法 O・Ω・Θ | c と n₀ を探す境界エクスプローラ、集合包含図、性質 A/B ステッパ、増加レース、増加表、フィボナッチ再帰木 |
+| 3 | リスト・スタック・待ち行列 | 配列リスト vs 連結リスト同時実行、スタック、再帰=スタック、循環キュー（輪＋直線）、操作列シミュレータ |
+| 4 | グラフ・木・2分木 | 3 表現（隣接行列/配列リスト改/連結リスト）切替エディタ、BFS 最短路、根付き木の用語エクスプローラ、木の BFS、前・中・後順のオイラー巡回、前順＋中順からの復元 |
+
+共通: 計算量表（`#/cheatsheet`）、用語集（`#/glossary`）、⌘K / `/` クイック検索、達成目標チェック・類題正答の保存（localStorage）。
+
+類題は講義内容から作成したオリジナル問題（課題レポートの問題そのものではない）。
+
+## URL / ルート
+- `/#/` ホーム ・ `/#/lecture/:n` 各回 ・ `/#/lecture/:n?a=<章ID>` 章へ直接 ・ `/#/cheatsheet` ・ `/#/glossary`
+
+## 講義の追加方法（次回以降）
+1. `public/static/js/lectures/lecNN.js` を作成（既存回と同じ形: `n, title, sub, en, tags, goals, chapters[{id,k,title,build}], quiz[]`）
+2. `public/static/js/lectures/index.js` で import して `LECTURES` に追加、`UPCOMING` を更新
+3. 用語を `public/static/js/data/glossary.js`、計算量を `pages/cheatsheet.js` に追記
+- 部品: `lib/ui.js`（lab, Player, stat, callout, table, formula…）、`lib/viz.js`（グラフ/木レイアウト）、`lib/code.js`（C コードビューア）、`lib/quiz.js`
+
+## 技術構成
+- Hono（Cloudflare Pages）で HTML シェルを配信、フロントは素の ES Modules（ビルド不要）
+- KaTeX（数式）、Google Fonts（Space Grotesk / Zen Kaku Gothic New / JetBrains Mono）
+- データ保存: ブラウザ localStorage のみ（サーバ DB なし）
+
+## 開発
+```bash
+npm run build && pm2 start ecosystem.config.cjs   # http://localhost:3000
 ```
 
-```txt
-npm run deploy
-```
-
-[For generating/synchronizing types based on your Worker configuration run](https://developers.cloudflare.com/workers/wrangler/commands/#types):
-
-```txt
-npm run cf-typegen
-```
-
-Pass the `CloudflareBindings` as generics when instantiation `Hono`:
-
-```ts
-// src/index.ts
-const app = new Hono<{ Bindings: CloudflareBindings }>()
-```
+## 未実装 / 次の一手
+- 第 5 回以降の講義資料の追加
+- 本番デプロイ（Cloudflare Pages）
+- 回をまたいだ総合演習モード、間違えた問題の復習リスト
