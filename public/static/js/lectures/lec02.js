@@ -1,4 +1,4 @@
-import { h, s, svgRoot, lab, Player, stat, callout, tldr, prose, card, cols, formula, table, tex, seg, $$, range } from '../lib/ui.js'
+import { h, s, svgRoot, lab, Player, stat, callout, tldr, prose, card, cols, formula, table, tex, seg, $$, range , talk, point } from '../lib/ui.js'
 import { codeView } from '../lib/code.js'
 import { layoutTree, drawGraph, setNodeClass } from '../lib/viz.js'
 
@@ -335,85 +335,124 @@ export default {
     {
       id: 'why', k: 'MOTIVATION', title: 'なぜ「大雑把」に評価するのか',
       build: (el) => el.append(
-        tldr('詳細な計算量は<b>ちょっとした記述の違いで変わってしまう</b>ので、アルゴリズムの本質を議論できない。だから n ≫ 1 での<b>主要項だけ</b>を見る（漸近記法）。'),
-        cols(2,
-          card('時間計算量（時間量）', '与えられた問題を<strong>少ない操作の数</strong>で解けるか。', 'GOOD ALGORITHM 1'),
-          card('空間計算量（領域量）', '与えられた問題を<strong>少ない変数の数</strong>で解けるか。', 'GOOD ALGORITHM 2')),
+        talk(`R: 前回、線形探索の最悪計算量は 6n + 1 回でしたよね。
+S: うん。じゃあ、ループの中に代入を 1 つ足したら？
+R: えっと、1 周 7 回になるから… 7n + 1 ですか。
+S: そう。<b>たった 1 行の書き方の違いで、計算量が変わっちゃう</b>。これじゃアルゴリズムの<b>本質</b>は議論できないよね。
+R: 確かに…。じゃあどうするんですか？
+S: n がすごく大きいときの<b>主要項だけ</b>を見る。これが<b>漸近記法</b>。たとえば n² + 3n + 6 なら、ざっくり n² として扱う。`),
         formula('T(n) = n^2 + 3n + 6 \\;\\;\\xrightarrow{\\; n\\gg1 \\;}\\;\\; T(n) \\approx n^2'),
         detailLab(),
-        callout('tip', 'NOTE', '<p>実用上は「<strong>理解しやすい</strong>」ことも良いアルゴリズムのかなり重要な視点。</p>'),
+        talk(`R: n が大きいと、6n+1 も 7n+1 も n で割ったら定数になる…。
+S: そう、どっちも「<b>n に比例</b>」っていう性質は同じ。ちなみに良いアルゴリズムの基準は、少ない操作数（<b>時間計算量</b>）、少ない変数（<b>空間計算量</b>）、それに<b>理解しやすさ</b>。最後のは実用上けっこう大事だよ。`),
+        point('詳細な計算量は記述次第で変わる → <b>主要項だけ</b>で議論するために漸近記法を使う。'),
       ),
     },
     {
       id: 'kinds', k: 'OVERVIEW', title: '漸近記法の 3 種類',
       build: (el) => el.append(
-        tldr('n → ∞ での T(n) の振る舞いを、ある関数 g(n) の<b>定数倍</b>と比べる。<b>上から</b>抑える＝O、<b>下から</b>＝Ω、<b>両側から</b>＝Θ。'),
+        talk(`S: 漸近記法は 3 種類。どれも T(n) を、ある関数 g(n) の<b>定数倍</b>と比べる。
+R: 何が違うんですか？
+S: <b>上から</b>抑えるのが O、<b>下から</b>抑えるのが Ω、<b>上と下の両方</b>から挟むのが Θ。`),
         cols(3,
-          card('$T(n)=O(g(n))$', 'n ≫ 1 で T(n) は g(n) の定数倍で<strong>上から</strong>抑えられる（上界）。「オーダ g(n)」と読む。', 'BIG-O', 'accent'),
-          card('$T(n)=\\Omega(g(n))$', 'n ≫ 1 で T(n) は g(n) の定数倍で<strong>下から</strong>抑えられる（下界）。', 'BIG-OMEGA'),
-          card('$T(n)=\\Theta(g(n))$', 'n ≫ 1 で T(n) は g(n) の定数倍で<strong>上と下から</strong>抑えられる。', 'BIG-THETA')),
+          card('$T(n)=O(g(n))$', 'n ≫ 1 で g(n) の定数倍で<strong>上から</strong>抑えられる（上界）。「オーダ g(n)」と読む。', 'BIG-O', 'accent'),
+          card('$T(n)=\\Omega(g(n))$', 'n ≫ 1 で g(n) の定数倍で<strong>下から</strong>抑えられる（下界）。', 'BIG-OMEGA'),
+          card('$T(n)=\\Theta(g(n))$', 'n ≫ 1 で g(n) の定数倍で<strong>上と下から</strong>抑えられる。', 'BIG-THETA')),
+        talk(`R: T(n) = 7n + 1 だと？
+S: n ≥ 1 なら 6n < 7n + 1 < 8n でしょ。<b>8n で上から、6n で下から</b>挟めるから、O(n) でも Ω(n) でも Θ(n) でもある。`),
         formula('n\\ge1:\\quad 6n \\;<\\; T(n)=7n+1 \\;<\\; 8n \\;\\;\\Rightarrow\\;\\; T(n)=O(n),\\; \\Omega(n),\\; \\Theta(n)'),
       ),
     },
     {
       id: 'bigo', k: 'DEFINITION', title: 'O(g(n)) — 上から抑える',
       build: (el) => el.append(
-        tldr('<b>ある正定数 c と n₀ が存在して</b>、n ≥ n₀ のすべての n で <b>T(n) ≤ c·g(n)</b>。同値な扱いやすい形として <b>lim T(n)/g(n) < ∞</b>。'),
+        talk(`S: O の定義をちゃんと書くと、<b>ある正の定数 c と n₀ が存在して、n ≥ n₀ のすべての n で T(n) ≤ c·g(n)</b>。
+R: うっ、急に数学っぽい…。
+S: 言い換えると「<b>ある地点から先は、g(n) を何倍かしたグラフが、ずっと T(n) の上にある</b>」ってこと。同じ意味で扱いやすい形が <b>lim T(n)/g(n) < ∞</b>。`),
         formula('T(n)=O(g(n)) \\iff \\exists\\, c>0,\\, n_0 \\;\\text{s.t.}\\; \\forall n\\ge n_0:\\; T(n)\\le c\\,g(n) \\quad\\text{or}\\quad \\lim_{n\\to\\infty}\\frac{T(n)}{g(n)}<\\infty'),
-        prose('<p>※ g(n) は n > 1 で常に正、かつ単調増加とする。不等式の形はイメージしやすく、極限の形は計算しやすい。教科書や講義では主にこの O を使う。</p>'),
+        talk(`R: 不等式の方がイメージしやすくて、極限の方が計算しやすい、って感じですか。
+S: そう。※ g(n) は n > 1 で常に正、しかも単調増加とする。下のラボで、実際に c と n₀ を動かして「上から抑えられるか」を確かめてみて。`),
         boundLab(),
+        talk(`R: g(n) = 1 だと、どんな c にしても T(n) がいつか追い越しますね。
+S: 極限で見ても lim (7n+1)/1 = ∞ だからダメ。g(n) = n なら 7、g(n) = n² なら 0 で、どっちも有限だから OK。`),
         h('div.reveal', table(['g(n)', '$\\lim T(n)/g(n)$ （T = 7n+1）', '判定'], [
           ['1', '∞', '<span class="rose">NG</span>'],
           ['n', '7', '<span class="lime">OK → T(n) = O(n)</span>'],
           ['n²', '0', '<span class="lime">OK → T(n) = O(n²)</span>'],
         ])),
-        callout('warn', 'PITFALL', '<p>T(n) = O(n) かつ T(n) = O(n²) だからといって <strong>O(n) = O(n²) ではない</strong>。T(n) = O(g(n)) は T(n) ∈ O(g(n)) の便利な書き方で、<strong>O(g(n)) は集合</strong>。正しくは O(n) ⊂ O(n²)。</p>'),
+        talk(`R: 待ってください。T(n) = O(n) で、T(n) = O(n²) でもあるなら… O(n) = O(n²) ですか？
+S: そこが一番の落とし穴！ <b>答えは NO</b>。<b>O(g(n)) は「集合」</b>で、T(n) = O(g(n)) は本当は T(n) ∈ O(g(n)) っていう意味なんだ。
+R: 「=」は便利な書き方なだけ、ってことか。
+S: そう。O(n) と O(n²) は違う集合だから、正しくは <b>O(n) ⊂ O(n²)</b>。図で見るとわかりやすいよ。`),
         setLab(),
+        point('<b>T(n) ≤ c·g(n)（n ≥ n₀）</b> ⇔ <b>lim T/g < ∞</b>。O(g(n)) は集合。<b>O(n) ⊂ O(n²)</b> であって O(n) = O(n²) ではない。'),
       ),
     },
     {
       id: 'props', k: 'PROPERTIES', title: 'O の性質 A・B — コードを見積もる道具',
       build: (el) => el.append(
-        tldr('T₁ = O(f), T₂ = O(g) のとき、<b>性質A（和）</b>: T₁+T₂ = O(max(f, g))、<b>性質B（積）</b>: T₁·T₂ = O(f·g)。全体のオーダは<b>最も増加の大きい部分</b>で決まる。'),
+        talk(`R: 実際のコードの計算量って、どうやって O で表すんですか？ 毎回極限を計算するのは大変そう…。
+S: そこで使うのが 2 つの性質。T₁ = O(f)、T₂ = O(g) のとき——
+S: <b>性質 A（和）</b>: T₁ + T₂ = O(max(f, g))。<b>性質 B（積）</b>: T₁·T₂ = O(f·g)。`),
         formula('\\textbf{A: } T_1+T_2=O(\\max(f,g)) \\qquad \\textbf{B: } T_1T_2=O(f\\,g)'),
-        prose('<p><strong>性質 A の証明</strong>（f ≤ g とする）: $\\lim \\frac{T_1+T_2}{g} = \\lim\\left(\\frac{T_1}{g}+\\frac{T_2}{g}\\right) \\le \\lim\\left(\\frac{T_1}{f}+\\frac{T_2}{g}\\right) < \\infty$。<br><strong>性質 B の証明</strong>: $\\lim \\frac{T_1T_2}{fg} = \\lim\\frac{T_1}{f}\\cdot\\lim\\frac{T_2}{g} < \\infty$。</p>'),
+        talk(`R: 足し算は大きい方だけ残って、掛け算はそのまま掛ける…。
+S: そう。つまり<b>順番に並んだ処理は一番重いものが支配して、入れ子になった処理は掛け算</b>。証明も極限で簡単にできる（f ≤ g とする）。`),
+        prose('<p><strong>性質 A</strong>: $\\lim \\frac{T_1+T_2}{g} = \\lim\\left(\\frac{T_1}{g}+\\frac{T_2}{g}\\right) \\le \\lim\\left(\\frac{T_1}{f}+\\frac{T_2}{g}\\right) < \\infty$<br><strong>性質 B</strong>: $\\lim \\frac{T_1T_2}{fg} = \\lim\\frac{T_1}{f}\\cdot\\lim\\frac{T_2}{g} < \\infty$</p>'),
+        talk(`S: スライドのアルゴリズム A と B で実際にやってみよう。← → で 1 段ずつ進めて。`),
         propLab(),
+        talk(`R: B は関数の中にループがあって、それをループで呼ぶから O(n) × n = O(n²) なんですね。
+S: そういうこと。全体のオーダは<b>n に対して一番増加が大きい部分</b>で決まる。じゃあ関数の「増加の大きさ」の順番を体で覚えよう。まずはノートに表を書いてから、答えを開いてね。`),
         growthTable(),
         raceLab(),
+        talk(`R: 2ⁿ、n = 64 くらいで他が全部ぺしゃんこ…。
+S: 指数関数は別格。<b>1 < log n < n < n log n < n² < n³ < 2ⁿ < 10ⁿ</b> の順番は、この先ずっと使うよ。`),
+        point('<b>和は max、積は掛け算</b>。並んだ処理は最も重いものが支配し、入れ子は掛け算。増加の順序は <b>1 < log n < n < n log n < n² < n³ < 2ⁿ</b>。'),
       ),
     },
     {
       id: 'omega', k: 'DEFINITION', title: 'Ω(g(n)) — 下から抑える',
       build: (el) => el.append(
-        tldr('O の<b>不等号を逆</b>にしたもの。ある正定数 c, n₀ が存在して n ≥ n₀ で <b>T(n) ≥ c·g(n)</b>。または <b>lim T(n)/g(n) > 0</b>。'),
+        talk(`S: Ω は O の<b>不等号を逆</b>にしたもの。ある正の定数 c, n₀ が存在して、n ≥ n₀ で <b>T(n) ≥ c·g(n)</b>。極限なら <b>lim T(n)/g(n) > 0</b>。
+R: 今度は「下から」ですね。`),
         formula('T(n)=\\Omega(g(n)) \\iff \\exists\\, c>0,\\, n_0:\\; \\forall n\\ge n_0:\\; T(n)\\ge c\\,g(n) \\quad\\text{or}\\quad \\lim_{n\\to\\infty}\\frac{T(n)}{g(n)}>0'),
+        talk(`R: 7n + 1 だと、g = 1 なら ∞ > 0 で OK、g = n なら 7 > 0 で OK、g = n² なら 0 でダメ？
+S: 完璧。O とちょうど逆になってるでしょ。`),
         h('div.reveal', table(['g(n)', '$\\lim T(n)/g(n)$ （T = 7n+1）', '判定'], [
           ['1', '∞ > 0', '<span class="lime">OK → Ω(1)</span>'],
           ['n', '7 > 0', '<span class="lime">OK → Ω(n)</span>'],
           ['n²', '0', '<span class="rose">NG</span>'],
         ])),
-        callout('def', 'PROPERTY', '<p>Ω も集合を表す（T(n) ∈ Ω(g(n))）。性質 A: T₁+T₂ = Ω(max(f, g))（Ω(min(f, g)) も成り立つが max の方が<strong>タイト</strong>）。性質 B: T₁T₂ = Ω(f·g)。</p>'),
-        callout('exam', 'HOMEWORK', '<p>講義の Ω の定義は<strong>教科書と異なる</strong>。どちらの定義の方が条件が厳しいか？ 教科書 p.16 と見比べよう。（第2回課題で問われる）</p>'),
+        talk(`S: Ω も集合だよ。性質も O と同じように成り立つ。性質 A は T₁+T₂ = Ω(max(f, g))。Ω(min(f, g)) も成り立つけど、max の方が<b>タイト</b>（きつい評価）。性質 B は T₁T₂ = Ω(f·g)。
+R: 証明は O と同じようにできる、って宿題になってましたね。
+S: それともう 1 つ。<b>講義の Ω の定義は教科書と違う</b>んだ。どっちの条件が厳しいか、教科書 p.16 と見比べておいて。課題で聞かれるよ。`),
+        point('Ω は <b>T(n) ≥ c·g(n)</b> ⇔ <b>lim T/g > 0</b>。包含の向きは O と逆で <b>Ω(n²) ⊂ Ω(n) ⊂ Ω(1)</b>。'),
       ),
     },
     {
       id: 'theta', k: 'DEFINITION', title: 'Θ(g(n)) — 上と下から挟む',
       build: (el) => el.append(
-        tldr('正定数 c₁, c₂, n₀ が存在して n ≥ n₀ で <b>c₁g(n) ≤ T(n) ≤ c₂g(n)</b>。または <b>0 < lim T(n)/g(n) < ∞</b>。O と Ω の両方を満たせば Θ。'),
+        talk(`S: 最後が Θ。正の定数 c₁, c₂, n₀ が存在して、n ≥ n₀ で <b>c₁·g(n) ≤ T(n) ≤ c₂·g(n)</b>。極限なら <b>0 < lim T(n)/g(n) < ∞</b>。
+R: O と Ω の両方を満たす、ってことですね。
+S: そう。T(n) = O(g(n)) かつ T(n) = Ω(g(n)) なら Θ(g(n))。逆が成り立つかは、定義を見比べて考えてみて。`),
         formula('T(n)=\\Theta(g(n)) \\iff 0<\\lim_{n\\to\\infty}\\frac{T(n)}{g(n)}<\\infty'),
         h('div.reveal', table(['g(n)', '$\\lim T(n)/g(n)$ （T = 7n+1）', '判定'], [
           ['1', '∞', '<span class="rose">NG（Ω(1) のみ）</span>'],
           ['n', '7', '<span class="lime">OK → Θ(n)</span>'],
           ['n²', '0', '<span class="rose">NG（O(n²) のみ）</span>'],
         ])),
-        callout('tip', 'INSIGHT', '<p>O や Ω と違い、Θ は g(n) が<strong>一意に定まりやすい</strong>。LAB 2-2 で「Θ」を選び、c₁ と c₂ の帯の中に T(n) を閉じ込めてみよう。「O かつ Ω ⇒ Θ」の逆は成り立つ？ — 定義を見比べて考えてみよう。</p>'),
-        callout('def', 'POLYNOMIAL', '<p>$T(n)=\\sum_{i=0}^{d} a_i n^i$（$a_i>0$）のような多項式なら、主要項は $n^d$。$\\lim T(n)/n^k$ が有限か・正かは、k と d の大小だけで決まる。</p>'),
+        talk(`R: O だと O(n) も O(n²) も正しかったけど、Θ だと Θ(n) しか残らない…。
+S: それが Θ のいいところ。<b>g(n) が一意に定まりやすい</b>。LAB 2-2 で「Θ」を選んで、2 本の線の間に T(n) を閉じ込めてみるといいよ。
+R: 多項式だったら、一番次数の高い項で決まるんですよね？
+S: そう。$T(n)=\\sum_{i=0}^{d} a_i n^i$（$a_i>0$）なら主要項は $n^d$。lim T(n)/n^k が有限か、正かは、<b>k と d の大小だけ</b>で決まる。課題に出るから、どの条件で O・Ω・Θ になるか自分で整理しておいて。`),
+        talk(`R: あと課題に、フィボナッチ数を求める 2 つの書き方が出てきますよね。
+S: ループ版と再帰版ね。再帰版は呼び出しが<b>木</b>みたいに枝分かれする。描いてみると、計算量のオーダがどうなるか一目でわかるよ。`),
         fibLab(),
+        point('Θ は <b>0 < lim T/g < ∞</b>。O と Ω の両方を満たし、g(n) が一意に定まりやすい。講義・教科書では主に O を使う。'),
       ),
     },
   ],
   quiz: [
-    { kind: 'multi', tag: '概念', q: '漸近記法を使う理由として<strong>適切なもの</strong>をすべて選べ。', opts: ['操作の僅かな違いも含めた詳細な計算量を議論できるから', '操作が僅かに違うだけで詳細な計算量は変わるため、詳細な議論は無意味だから', '主要項に着目し、おおまかな計算量を議論できるから'], answer: [1, 2], explain: '漸近記法は詳細を「捨てる」ための道具。1 は逆のことを言っている。' },
+    { kind: 'multi', tag: '概念', q: '漸近記法を使う理由として<strong>適切なもの</strong>をすべて選べ。', opts: ['操作の僅かな違いも含めた詳細な計算量を議論できるから', '操作が僅かに違うだけで詳細な計算量は変わるため、詳細な議論は無意味だから', '主要項に着目し、おおまかな計算量を議論できるから'], answer: [1, 2], explain: '漸近記法は詳細を「捨てる」ための道具。A は逆のことを言っている。' },
     { kind: 'input', tag: '計算', q: '$T(n) = 4n^2 + 100n + 7$ のとき、$\\lim_{n\\to\\infty} T(n)/n^2$ の値は？', answer: '4', explain: '主要項 4n² 以外は n² で割ると 0 に行く。よって 4（有限かつ正なので Θ(n²)）。' },
     { kind: 'multi', tag: '集合', q: '$T(n) = 3n\\log n + 5$ が属するものをすべて選べ。', opts: ['$O(n)$', '$O(n^2)$', '$\\Omega(n)$', '$\\Theta(n\\log n)$', '$\\Omega(n^2)$'], answer: [1, 2, 3], explain: 'n < n log n < n² の順。上界は n log n 以上、下界は n log n 以下の関数ならよい。' },
     { kind: 'choice', tag: '性質', q: '$T_1(n)=O(n^2)$, $T_2(n)=O(n\\log n)$ のとき $T_1(n)+T_2(n)$ は？', opts: ['$O(n^2\\log n)$', '$O(n^2)$', '$O(n\\log n)$', '$O(n^3\\log n)$'], answer: 1, explain: '性質 A: 和は max。max(n², n log n) = n²。' },

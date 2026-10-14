@@ -25,14 +25,15 @@ export function quiz(id, items) {
 
   function one(it, qi) {
     const box = h('div.q')
-    const fb = h('div.q-fb')
+    const fb = h('div.q-fb.talky')
     let picked = new Set()
     const mark = (ok, silent) => {
       results[qi] = ok
       box.classList.toggle('correct', ok)
       box.classList.toggle('wrong', !ok)
       fb.classList.add('show')
-      fb.innerHTML = `<span class="res ${ok ? 'lime' : 'rose'}">${ok ? '✓ 正解' : '✕ 不正解'}</span>${it.explain}`
+      const react = ok ? ['お、正解！', 'そのとおり。', 'ばっちり。'][qi % 3] : ['おしい！', 'ここは引っかかりやすい。', 'もう一度見てみよう。'][qi % 3]
+      fb.innerHTML = `<div class="line s in"><div class="av" aria-hidden="true">サ</div><div class="bubble-wrap"><div class="who">サカイ</div><div class="bubble"><span class="res ${ok ? 'lime' : 'rose'}">${ok ? '✓ 正解' : '✕ 不正解'}</span>${react} ${it.explain}</div></div></div>`
       typeset(fb)
       if (!silent) update()
     }

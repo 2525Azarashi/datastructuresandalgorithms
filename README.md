@@ -5,7 +5,8 @@
 ## デザインコンセプト — "Blueprint of computation"
 - 黒地の設計図グリッド＋紙白のタイポ。色は**意味**を持つ: 琥珀 = いま注目（ポインタ）、シアン = 訪問済み、ライム = 発見・正解、ローズ = 削除・失敗
 - ヒーロー: 同じ 15 個の数が「配列 → スタック → 循環キュー → 2分木 → グラフ」に変形し、琥珀のパルスが辺を辿る（＝規則が変わればデータ構造が変わる）
-- 各回は「要点（TL;DR）→ 可視化ラボ → 解説 → 類題」の順。全ラボは ← → / Space でステップ再生
+- **対話形式**: 本文は **サカイ（先輩・解説役／琥珀・左）** と **リョウガ（受講生・質問役／シアン・右）** の会話で進む。類題の解説もサカイの吹き出しで表示
+- 各章は「対話 → 可視化ラボ → 対話 → POINT（ここだけ押さえる）」、各回の最後に類題。全ラボは ← → / Space でステップ再生
 
 ## 実装済みの内容
 | 回 | テーマ | 主なラボ |
@@ -26,7 +27,17 @@
 1. `public/static/js/lectures/lecNN.js` を作成（既存回と同じ形: `n, title, sub, en, tags, goals, chapters[{id,k,title,build}], quiz[]`）
 2. `public/static/js/lectures/index.js` で import して `LECTURES` に追加、`UPCOMING` を更新
 3. 用語を `public/static/js/data/glossary.js`、計算量を `pages/cheatsheet.js` に追記
-- 部品: `lib/ui.js`（lab, Player, stat, callout, table, formula…）、`lib/viz.js`（グラフ/木レイアウト）、`lib/code.js`（C コードビューア）、`lib/quiz.js`
+4. 章の本文は対話で書く:
+   ```js
+   build(el) {
+     el.append(
+       talk(`R: 質問（リョウガ）
+   S: 解説（サカイ）。HTML・$数式$ 可。続く行は改行として連結`),
+       lab(...),            // 可視化
+       point('章の要点 1〜2 文'))
+   }
+   ```
+- 部品: `lib/ui.js`（talk, point, lab, Player, stat, callout, table, formula…）、`lib/viz.js`（グラフ/木レイアウト）、`lib/code.js`（C コードビューア）、`lib/quiz.js`
 
 ## 技術構成
 - Hono（Cloudflare Pages）で HTML シェルを配信、フロントは素の ES Modules（ビルド不要）

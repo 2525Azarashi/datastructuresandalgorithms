@@ -207,3 +207,31 @@ export function seg(options, value, onChange) {
 export function parseNums(str) {
   return str.split(/[\s,，、]+/).filter(Boolean).map(Number).filter((x) => Number.isFinite(x))
 }
+
+// ---------- Dialogue (リョウガ × サカイ) ----------
+export const CAST = {
+  S: { name: 'サカイ', role: '先輩', init: 'サ', cls: 's' },
+  R: { name: 'リョウガ', role: '受講生', init: 'リ', cls: 'r' },
+}
+/**
+ * talk(`S: ...\nR: ...`)  — 行頭の "S:" / "R:" で話者を切り替える。HTML 可。
+ * 話者記号のない行は直前の発言の続きとして扱う。
+ */
+export function talk(script) {
+  const lines = []
+  script.split('\n').forEach((raw) => {
+    const t = raw.trim()
+    if (!t) return
+    const m = t.match(/^([SR])[:：]\s*(.*)$/)
+    if (m) lines.push({ who: m[1], text: m[2] })
+    else if (lines.length) lines[lines.length - 1].text += '<br>' + t
+  })
+  return h('div.talk', lines.map((l, i) => {
+    const c = CAST[l.who]
+    return h(`div.line.${c.cls}.reveal`, { style: { transitionDelay: `${(i % 4) * 70}ms` } },
+      h('div.av', { 'aria-hidden': 'true' }, c.init),
+      h('div.bubble-wrap', h('div.who', c.name), h('div.bubble', { html: l.text })))
+  }))
+}
+/** 章末の「ここだけ押さえる」 */
+export const point = (htmlStr) => h('div.point.reveal', h('div.point-k', 'POINT — ここだけ押さえる'), h('p.tldr.mt0', { html: htmlStr }))
