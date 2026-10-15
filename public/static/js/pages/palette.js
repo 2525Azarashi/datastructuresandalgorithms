@@ -7,11 +7,11 @@ export function openPalette() {
   if (rootEl.firstChild) return
   const avail = new Set(LECTURES.map((l) => l.n))
   const items = [
-    { t: '講義一覧（ホーム）', g: 'PAGE', href: '#/' },
-    { t: '計算量表', g: 'PAGE', href: '#/cheatsheet' },
-    { t: '用語集', g: 'PAGE', href: '#/glossary' },
+    { t: '講義一覧（ホーム）', g: 'ページ', href: '#/' },
+    { t: '計算量表', g: 'ページ', href: '#/cheatsheet' },
+    { t: '用語集', g: 'ページ', href: '#/glossary' },
     ...LECTURES.flatMap((l) => [
-      { t: `第${l.n}回 ${l.title}`, g: 'LECTURE', href: `#/lecture/${l.n}` },
+      { t: `第${l.n}回 ${l.title}`, g: '講義', href: `#/lecture/${l.n}` },
       ...l.chapters.map((c) => ({ t: c.title, g: `第${l.n}回`, href: `#/lecture/${l.n}?a=${c.id}` })),
       { t: `第${l.n}回 類題`, g: `第${l.n}回`, href: `#/lecture/${l.n}?a=quiz` },
     ]),

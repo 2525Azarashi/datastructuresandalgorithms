@@ -286,8 +286,8 @@ function dfsLab() {
     G = drawGraph({ pos: Lr.pos, edges, W: Lr.W, H: Lr.H + 16, r: 17 })
     // L/R labels
     edges.forEach(([u, v]) => { const A = Lr.pos[u], B = Lr.pos[v]; G.gE.appendChild(s('text', { x: (A.x + B.x) / 2 + (L[u] === v ? -12 : 8), y: (A.y + B.y) / 2 - 2, class: 'lbl', 'font-size': 9.5, text: L[u] === v ? 'L' : 'R' })) })
-    tourPath = s('path', { fill: 'none', stroke: '#ffb547', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: .9 })
-    const dot = s('circle', { r: 23, fill: 'none', stroke: '#ffb547', 'stroke-width': 2, opacity: .8 })
+    tourPath = s('path', { fill: 'none', stroke: '#ff8a3d', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: .9 })
+    const dot = s('circle', { r: 23, fill: 'none', stroke: '#ff8a3d', 'stroke-width': 2, opacity: .8 })
     G.svg.insertBefore(tourPath, G.gN); G.svg.insertBefore(dot, G.gN); G.dot = dot
     G.badges = {}
     Object.entries(Lr.pos).forEach(([i, p]) => { const t = s('text', { x: p.x, y: p.y + 37, 'text-anchor': 'middle', class: 'lbl am', 'font-size': 10, text: '' }); G.svg.appendChild(t); G.badges[i] = t })
@@ -428,7 +428,7 @@ export default {
   sub: '基本的なデータ構造 (2) — つながりを表すデータ構造と探索',
   en: 'Graph, Tree & Binary Tree',
   tags: ['隣接行列', '隣接リスト', '最短路', '幅優先', '前順・中順・後順'],
-  mini: '<svg viewBox="0 0 120 60"><g stroke="rgba(233,230,223,.4)"><path d="M60 10 30 34M60 10 90 34M30 34 16 54M30 34 44 54"/></g><circle cx="60" cy="10" r="6" fill="#ffb547"/><circle cx="30" cy="34" r="6" fill="#5ad8ff" fill-opacity=".4" stroke="#5ad8ff"/><circle cx="90" cy="34" r="6" fill="#151a22" stroke="#ece9e2"/><circle cx="16" cy="54" r="5" fill="#151a22" stroke="#ece9e2"/><circle cx="44" cy="54" r="5" fill="#151a22" stroke="#ece9e2"/></svg>',
+  mini: '<svg viewBox="0 0 120 60"><g stroke="rgba(61,46,84,.4)"><path d="M60 10 30 34M60 10 90 34M30 34 16 54M30 34 44 54"/></g><circle cx="60" cy="10" r="6" fill="#ff8a3d"/><circle cx="30" cy="34" r="6" fill="#3fa9f5" fill-opacity=".4" stroke="#3fa9f5"/><circle cx="90" cy="34" r="6" fill="#ffffff" stroke="#3d2e54"/><circle cx="16" cy="54" r="5" fill="#ffffff" stroke="#3d2e54"/><circle cx="44" cy="54" r="5" fill="#ffffff" stroke="#3d2e54"/></svg>',
   goals: [
     'グラフ（無向・有向・重み付き）と関連用語を説明できる',
     'グラフの 3 つの実現方法と、その計算量の違いを説明できる',

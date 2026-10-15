@@ -1,4 +1,4 @@
-import { h, $$, store, typeset } from './ui.js'
+import { h, $$, store, typeset, talkLine } from './ui.js'
 
 /**
  * items: [{ kind:'choice'|'multi'|'input', q, opts?, answer, explain, tag? }]
@@ -32,10 +32,13 @@ export function quiz(id, items) {
       box.classList.toggle('correct', ok)
       box.classList.toggle('wrong', !ok)
       fb.classList.add('show')
-      const react = ok ? ['お、正解！', 'そのとおり。', 'ばっちり。'][qi % 3] : ['おしい！', 'ここは引っかかりやすい。', 'もう一度見てみよう。'][qi % 3]
-      fb.innerHTML = `<div class="line s in"><div class="av" aria-hidden="true">サ</div><div class="bubble-wrap"><div class="who">サカイ</div><div class="bubble"><span class="res ${ok ? 'lime' : 'rose'}">${ok ? '✓ 正解' : '✕ 不正解'}</span>${react} ${it.explain}</div></div></div>`
+      const react = ok ? ['お、正解！', 'そのとおり！', 'ばっちり！'][qi % 3] : ['おしい！', 'ここは引っかかりやすいんだ。', 'もう一回見てみよう。'][qi % 3]
+      fb.innerHTML = ''
+      const ln = talkLine('S', `<span class="res ${ok ? 'lime' : 'rose'}">${ok ? '○ 正解' : '× 不正解'}</span>${react} ${it.explain}`, ok ? 'happy' : 'oops', 0, ok ? '.ok' : '.ng')
+      ln.classList.add('in')
+      fb.appendChild(ln)
       typeset(fb)
-      if (!silent) update()
+      if (!silent) { update(); if (ok) confetti(box) }
     }
     let body
     if (it.kind === 'input') {
@@ -86,4 +89,18 @@ export function quiz(id, items) {
 export function quizProgress(id, total) {
   const s = store.get('quiz:' + id, {})
   return { done: Object.keys(s).length, ok: Object.values(s).filter(Boolean).length, total }
+}
+
+function confetti(anchor) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  const r = anchor.getBoundingClientRect()
+  const cols = ['#ff8a3d', '#3fa9f5', '#2fbf71', '#ff5c8a', '#ffd23f', '#9b7bff']
+  for (let i = 0; i < 26; i++) {
+    const el = document.createElement('i')
+    el.className = 'confetti'
+    const a = Math.random() * Math.PI * 2, d = 60 + Math.random() * 110
+    el.style.cssText = `left:${r.left + r.width * (0.2 + Math.random() * 0.6)}px;top:${r.top + 30}px;background:${cols[i % cols.length]};--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d - 70}px;--rot:${Math.random() * 720 - 360}deg;border-radius:${i % 3 ? '3px' : '50%'}`
+    document.body.appendChild(el)
+    setTimeout(() => el.remove(), 1100)
+  }
 }

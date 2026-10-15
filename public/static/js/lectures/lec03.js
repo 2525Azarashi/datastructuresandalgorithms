@@ -46,16 +46,16 @@ function listLab() {
     const pos = order.map((o, k) => { const p = { x, y: y0 + (o.i === 'new' ? 34 : ((k * 37) % 3) * 4 - 4) }; x += cw + gap; return p })
     // pointer from head
     if (order.length) svg.appendChild(s('path', { d: `M38 ${y0 + 18} L${pos[0].x - 3} ${pos[0].y + 18}`, class: 'ptr', 'marker-end': 'url(#ah)' }))
-    svg.appendChild(s('defs', {}, s('marker', { id: 'ah', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto' }, s('path', { d: 'M0 0 10 5 0 10z', fill: '#ffb547' })),
-      s('marker', { id: 'ag', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto' }, s('path', { d: 'M0 0 10 5 0 10z', fill: 'rgba(233,230,223,.5)' }))))
+    svg.appendChild(s('defs', {}, s('marker', { id: 'ah', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto' }, s('path', { d: 'M0 0 10 5 0 10z', fill: '#ff8a3d' })),
+      s('marker', { id: 'ag', viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto' }, s('path', { d: 'M0 0 10 5 0 10z', fill: 'rgba(61,46,84,.5)' }))))
     order.forEach((o, k) => {
       const p = pos[k]
       const c = o.i === 'new' ? 'ok' : cls[o.i] || ''
       const removed = opts.removed === o.i
       svg.appendChild(s('g', { class: `cell ${c} ${removed ? 'bad' : ''}`, transform: `translate(${p.x},${p.y})`, opacity: removed ? .5 : 1 },
         s('rect', { width: cw - 18, height: 36, rx: 7 }),
-        s('rect', { x: cw - 18, width: 18, height: 36, rx: 4, style: 'fill: rgba(255,255,255,.04)' }),
-        s('circle', { cx: cw - 9, cy: 18, r: 3, fill: '#ece9e2' }),
+        s('rect', { x: cw - 18, width: 18, height: 36, rx: 4, style: 'fill: rgba(61,46,84,.04)' }),
+        s('circle', { cx: cw - 9, cy: 18, r: 3, fill: '#3d2e54' }),
         s('text', { x: (cw - 18) / 2, y: 18, class: 'v', text: o.v }),
         s('text', { x: (cw - 18) / 2, y: 52, class: 'idx', text: o.i === 'new' ? 'new' : `a${o.i}` })))
       // pointer to next
@@ -65,7 +65,7 @@ function listLab() {
       const from = { x: p.x + cw - 9, y: p.y + 18 }
       if (nxt) {
         const changed = opts.changed?.includes(k)
-        svg.appendChild(s('path', { d: `M${from.x} ${from.y} C${from.x + gap / 2 + 8} ${from.y}, ${nxt.x - gap / 2 - 8} ${nxt.y + 18}, ${nxt.x - 3} ${nxt.y + 18}`, class: 'ptr', style: changed ? '' : 'stroke: rgba(233,230,223,.4)', 'marker-end': changed ? 'url(#ah)' : 'url(#ag)', fill: 'none' }))
+        svg.appendChild(s('path', { d: `M${from.x} ${from.y} C${from.x + gap / 2 + 8} ${from.y}, ${nxt.x - gap / 2 - 8} ${nxt.y + 18}, ${nxt.x - 3} ${nxt.y + 18}`, class: 'ptr', style: changed ? '' : 'stroke: rgba(61,46,84,.4)', 'marker-end': changed ? 'url(#ah)' : 'url(#ag)', fill: 'none' }))
       } else {
         svg.appendChild(s('text', { x: from.x + 10, y: from.y + 4, class: 'lbl ro', text: 'null' }))
       }
@@ -183,7 +183,7 @@ function stackLab() {
     const tx = x0 + Math.min(top, K - 0.5) * (CW + GAP) + CW / 2 - (top === K ? CW / 2 + GAP : 0)
     svg.appendChild(s('g', { style: 'transition: transform .35s', transform: `translate(${tx},0)` },
       s('text', { x: 0, y: 14, 'text-anchor': 'middle', class: 'lbl am', text: `top=${top}` }),
-      s('path', { d: 'M-6 22 L0 32 L6 22', fill: '#ffb547' })))
+      s('path', { d: 'M-6 22 L0 32 L6 22', fill: '#ff8a3d' })))
     stage.innerHTML = ''; stage.appendChild(svg); sTop.set(String(top))
   }
   const addLog = (html) => { log.prepend(h('div', { html })) }
@@ -293,10 +293,10 @@ function queueLab() {
     range(K).forEach((i) => {
       const filled = inQ(i)
       const fl = flash === i
-      const col = fl ? (kind === 'out' ? '#ff6b81' : '#b8f36b') : filled ? '#5ad8ff' : 'rgba(233,230,223,.18)'
-      svg.appendChild(s('path', { d: arc(i), fill: fl ? (kind === 'out' ? 'rgba(255,107,129,.16)' : 'rgba(184,243,107,.16)') : filled ? 'rgba(90,216,255,.1)' : 'transparent', stroke: col, 'stroke-width': 1.2, 'stroke-dasharray': filled || fl ? '' : '3 4', style: 'transition: all .35s' }))
+      const col = fl ? (kind === 'out' ? '#ff5c8a' : '#2fbf71') : filled ? '#3fa9f5' : 'rgba(61,46,84,.18)'
+      svg.appendChild(s('path', { d: arc(i), fill: fl ? (kind === 'out' ? 'rgba(255,92,138,.16)' : 'rgba(47,191,113,.16)') : filled ? 'rgba(63,169,245,.1)' : 'transparent', stroke: col, 'stroke-width': 1.2, 'stroke-dasharray': filled || fl ? '' : '3 4', style: 'transition: all .35s' }))
       const tm = (ang(i) + ang(i + 1)) / 2
-      svg.appendChild(s('text', { x: C + (R0 + R1) / 2 * Math.cos(tm), y: C + (R0 + R1) / 2 * Math.sin(tm), 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: filled || fl ? '#ece9e2' : '#5b606b', 'font-size': 16, 'font-family': 'JetBrains Mono', text: filled || (fl && kind === 'out') ? a[i] : '' }))
+      svg.appendChild(s('text', { x: C + (R0 + R1) / 2 * Math.cos(tm), y: C + (R0 + R1) / 2 * Math.sin(tm), 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: filled || fl ? '#3d2e54' : '#c3b9d1', 'font-size': 16, 'font-family': 'JetBrains Mono', text: filled || (fl && kind === 'out') ? a[i] : '' }))
       svg.appendChild(s('text', { x: C + (R1 + 14) * Math.cos(tm), y: C + (R1 + 14) * Math.sin(tm), 'text-anchor': 'middle', 'dominant-baseline': 'central', class: 'lbl', text: `a[${i}]` }))
     })
     const marker = (i, txt, col, r) => {
@@ -304,9 +304,9 @@ function queueLab() {
       svg.appendChild(s('line', { x1: C + 22 * Math.cos(tm), y1: C + 22 * Math.sin(tm), x2: C + (R0 - 6) * Math.cos(tm), y2: C + (R0 - 6) * Math.sin(tm), stroke: col, 'stroke-width': 2 }))
       svg.appendChild(s('text', { x: C + r * Math.cos(tm), y: C + r * Math.sin(tm) + (txt === 'tail' && head === tail ? 12 : 0), 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: col, 'font-size': 11, 'font-family': 'JetBrains Mono', 'font-weight': 700, text: txt }))
     }
-    marker(head, 'head', '#ffb547', 42)
-    marker(tail, 'tail', '#5ad8ff', head === tail ? 52 : 42)
-    svg.appendChild(s('circle', { cx: C, cy: C, r: 18, fill: '#13171f', stroke: 'rgba(233,230,223,.15)' }))
+    marker(head, 'head', '#ff8a3d', 42)
+    marker(tail, 'tail', '#3fa9f5', head === tail ? 52 : 42)
+    svg.appendChild(s('circle', { cx: C, cy: C, r: 18, fill: '#ffffff', stroke: 'rgba(61,46,84,.15)' }))
     ring.innerHTML = ''; ring.appendChild(svg)
     // linear view
     const W2 = 560, svg2 = svgRoot(W2, 104)
@@ -407,7 +407,7 @@ export default {
   sub: '基本的なデータ構造 (1) と、その配列／ポインタによる実現',
   en: 'List, Stack & Queue',
   tags: ['配列リスト', '連結リスト', 'LIFO', 'FIFO', '循環バッファ'],
-  mini: '<svg viewBox="0 0 120 60"><g fill="none" stroke="#ece9e2" stroke-opacity=".5"><rect x="4" y="22" width="20" height="16" rx="3"/><rect x="34" y="22" width="20" height="16" rx="3"/><rect x="64" y="22" width="20" height="16" rx="3"/></g><rect x="94" y="22" width="20" height="16" rx="3" fill="rgba(255,181,71,.2)" stroke="#ffb547"/><path d="M24 30h10M54 30h10M84 30h10" stroke="#ffb547"/></svg>',
+  mini: '<svg viewBox="0 0 120 60"><g fill="none" stroke="#3d2e54" stroke-opacity=".5"><rect x="4" y="22" width="20" height="16" rx="3"/><rect x="34" y="22" width="20" height="16" rx="3"/><rect x="64" y="22" width="20" height="16" rx="3"/></g><rect x="94" y="22" width="20" height="16" rx="3" fill="rgba(255,138,61,.2)" stroke="#ff8a3d"/><path d="M24 30h10M54 30h10M84 30h10" stroke="#ff8a3d"/></svg>',
   goals: [
     'データ構造が「データの集まり・規則・操作」から成ることを説明できる',
     'リストの配列による実現と連結リスト（ポインタ）による実現を説明できる',

@@ -89,14 +89,14 @@ function boundLab() {
     // grid
     for (let i = 0; i <= 4; i++) {
       const y = pad.t + (i / 4) * (Hd - pad.t - pad.b)
-      svg.appendChild(s('line', { x1: pad.l, x2: Wd - pad.r, y1: y, y2: y, stroke: 'rgba(233,230,223,.06)' }))
+      svg.appendChild(s('line', { x1: pad.l, x2: Wd - pad.r, y1: y, y2: y, stroke: 'rgba(61,46,84,.06)' }))
       svg.appendChild(s('text', { x: pad.l - 8, y: y + 4, 'text-anchor': 'end', class: 'lbl', text: fmtN(ymax * (1 - i / 4)) }))
     }
     ;[1, Math.round(nmax / 2), nmax].forEach((n) => svg.appendChild(s('text', { x: X(n), y: Hd - 14, 'text-anchor': 'middle', class: 'lbl', text: n })))
     svg.appendChild(s('text', { x: Wd - pad.r, y: Hd - 1, 'text-anchor': 'end', class: 'lbl', text: 'n →' }))
     // n0 region
-    svg.appendChild(s('rect', { x: X(n0), y: pad.t, width: Math.max(0, X(nmax) - X(n0)), height: Hd - pad.t - pad.b, fill: 'rgba(255,181,71,.04)' }))
-    svg.appendChild(s('line', { x1: X(n0), x2: X(n0), y1: pad.t, y2: Hd - pad.b, stroke: '#ffb547', 'stroke-dasharray': '3 4', opacity: .6 }))
+    svg.appendChild(s('rect', { x: X(n0), y: pad.t, width: Math.max(0, X(nmax) - X(n0)), height: Hd - pad.t - pad.b, fill: 'rgba(255,138,61,.04)' }))
+    svg.appendChild(s('line', { x1: X(n0), x2: X(n0), y1: pad.t, y2: Hd - pad.b, stroke: '#ff8a3d', 'stroke-dasharray': '3 4', opacity: .6 }))
     svg.appendChild(s('text', { x: X(n0) + 5, y: pad.t + 12, class: 'lbl am', text: 'n₀ = ' + n0 }))
     // violation points
     let bad = 0, badFirst = null
@@ -104,17 +104,17 @@ function boundLab() {
       if (n < n0) return
       const tv = T(n)
       const viol = (up && tv > up(n) + 1e-9) || (lo && tv < lo(n) - 1e-9)
-      if (viol) { bad++; if (badFirst == null) badFirst = n; svg.appendChild(s('rect', { x: X(n) - 1.5, y: Hd - pad.b - 6, width: 3, height: 6, fill: '#ff6b81' })) }
+      if (viol) { bad++; if (badFirst == null) badFirst = n; svg.appendChild(s('rect', { x: X(n) - 1.5, y: Hd - pad.b - 6, width: 3, height: 6, fill: '#ff5c8a' })) }
     })
     const path = (f) => 'M' + xs.map((n) => `${X(n).toFixed(1)},${Y(f(n)).toFixed(1)}`).join('L')
-    if (up && lo) svg.appendChild(s('path', { d: path(up) + 'L' + xs.slice().reverse().map((n) => `${X(n).toFixed(1)},${Y(lo(n)).toFixed(1)}`).join('L') + 'Z', fill: 'rgba(90,216,255,.06)' }))
-    if (up) svg.appendChild(s('path', { d: path(up), stroke: '#ffb547', 'stroke-width': 2, fill: 'none', 'stroke-dasharray': '6 4' }))
-    if (lo) svg.appendChild(s('path', { d: path(lo), stroke: '#5ad8ff', 'stroke-width': 2, fill: 'none', 'stroke-dasharray': '6 4' }))
-    svg.appendChild(s('path', { d: path(T), stroke: '#ece9e2', 'stroke-width': 2.6, fill: 'none' }))
+    if (up && lo) svg.appendChild(s('path', { d: path(up) + 'L' + xs.slice().reverse().map((n) => `${X(n).toFixed(1)},${Y(lo(n)).toFixed(1)}`).join('L') + 'Z', fill: 'rgba(63,169,245,.06)' }))
+    if (up) svg.appendChild(s('path', { d: path(up), stroke: '#ff8a3d', 'stroke-width': 2, fill: 'none', 'stroke-dasharray': '6 4' }))
+    if (lo) svg.appendChild(s('path', { d: path(lo), stroke: '#3fa9f5', 'stroke-width': 2, fill: 'none', 'stroke-dasharray': '6 4' }))
+    svg.appendChild(s('path', { d: path(T), stroke: '#3d2e54', 'stroke-width': 2.6, fill: 'none' }))
     const lx = Wd - pad.r - 6
-    svg.appendChild(s('text', { x: lx, y: pad.t + 14, 'text-anchor': 'end', fill: '#ece9e2', 'font-size': 12, 'font-family': 'JetBrains Mono', text: 'T(n) = ' + tKey }))
-    if (up) svg.appendChild(s('text', { x: lx, y: pad.t + 30, 'text-anchor': 'end', fill: '#ffb547', 'font-size': 12, 'font-family': 'JetBrains Mono', text: `${c}·g(n)  上から` }))
-    if (lo) svg.appendChild(s('text', { x: lx, y: pad.t + (up ? 46 : 30), 'text-anchor': 'end', fill: '#5ad8ff', 'font-size': 12, 'font-family': 'JetBrains Mono', text: `${mode === 'Θ' ? c1 : c}·g(n)  下から` }))
+    svg.appendChild(s('text', { x: lx, y: pad.t + 14, 'text-anchor': 'end', fill: '#3d2e54', 'font-size': 12, 'font-family': 'JetBrains Mono', text: 'T(n) = ' + tKey }))
+    if (up) svg.appendChild(s('text', { x: lx, y: pad.t + 30, 'text-anchor': 'end', fill: '#ff8a3d', 'font-size': 12, 'font-family': 'JetBrains Mono', text: `${c}·g(n)  上から` }))
+    if (lo) svg.appendChild(s('text', { x: lx, y: pad.t + (up ? 46 : 30), 'text-anchor': 'end', fill: '#3fa9f5', 'font-size': 12, 'font-family': 'JetBrains Mono', text: `${mode === 'Θ' ? c1 : c}·g(n)  下から` }))
 
     // limit-based truth
     const rt = T_OPTS[tKey].rank, rg = FUNCS[gKey].rank
@@ -167,7 +167,7 @@ function growthTable() {
   const ns = [10, 100, 1000, 10000]
   const t = table(['n', ...names], ns.map((n) => [`10<sup>${Math.log10(n)}</sup>`, ...names.map((k) => fmt(k, n))]), (c, ri, ci) => (ci === 0 ? '' : 'mid hide'))
   const wrap = h('div', t, h('div.ctrl-row', reveal, h('span.small', '※ log は log₁₀。2ⁿ は 10^x で近似（スライド 14 の課題）')))
-  const st = h('style', '.tbl td.hide{color:transparent!important;background:repeating-linear-gradient(45deg,transparent 0 6px,rgba(255,255,255,.03) 6px 12px);transition:color .3s}')
+  const st = h('style', '.tbl td.hide{color:transparent!important;background:repeating-linear-gradient(45deg,transparent 0 6px,rgba(61,46,84,.03) 6px 12px);transition:color .3s}')
   return lab({ title: 'LAB 2-3 — 関数の増加の大きさを実感する', hint: 'まずノートに書いてみる', body: h('div', st, formula('1 < \\log n < n < n\\log n < n^2 < n^3 < 2^n < 10^n'), wrap) })
 }
 
@@ -176,7 +176,7 @@ function raceLab() {
   const svg = svgRoot(W, H)
   const sl = h('input', { type: 'range', min: 2, max: 64, step: 1, value: 24, style: { width: '220px' }, 'aria-label': 'n の最大値' })
   const keys = ['1', 'log n', 'n', 'n log n', 'n²', 'n³', '2ⁿ']
-  const col = ['#5b606b', '#5ad8ff', '#b8f36b', '#b59cff', '#ffb547', '#ff9f43', '#ff6b81']
+  const col = ['#c3b9d1', '#3fa9f5', '#2fbf71', '#9b7bff', '#ff8a3d', '#ff7a1a', '#ff5c8a']
   const draw = () => {
     const nmax = +sl.value
     svg.innerHTML = ''
@@ -184,7 +184,7 @@ function raceLab() {
     const X = (n) => pad.l + ((n - 1) / (nmax - 1)) * (W - pad.l - pad.r)
     const Y = (v) => H - pad.b - (Math.log10(Math.max(v, 1)) / ymaxL) * (H - pad.t - pad.b)
     for (let e = 0; e <= ymaxL; e += Math.max(1, Math.ceil(ymaxL / 5))) {
-      svg.appendChild(s('line', { x1: pad.l, x2: W - pad.r, y1: Y(10 ** e), y2: Y(10 ** e), stroke: 'rgba(233,230,223,.06)' }))
+      svg.appendChild(s('line', { x1: pad.l, x2: W - pad.r, y1: Y(10 ** e), y2: Y(10 ** e), stroke: 'rgba(61,46,84,.06)' }))
       svg.appendChild(s('text', { x: pad.l - 6, y: Y(10 ** e) + 4, 'text-anchor': 'end', class: 'lbl', text: '10^' + e }))
     }
     svg.appendChild(s('text', { x: W - pad.r, y: H - 10, 'text-anchor': 'end', class: 'lbl', text: `n = ${nmax}` }))
@@ -217,13 +217,13 @@ function setLab() {
     for (let i = N - 1; i >= 0; i--) {
       const k = mode === 'Ω' ? N - 1 - i : i
       const contains = mode === 'O' ? pick <= k : mode === 'Ω' ? pick >= k : pick === k
-      svg.appendChild(s('ellipse', { cx: left + RX(i), cy, rx: RX(i), ry: RY(i), fill: contains ? 'rgba(255,181,71,.04)' : 'rgba(10,12,16,.0)', stroke: contains ? '#ffb547' : 'rgba(233,230,223,.16)', 'stroke-width': contains ? 1.5 : 1, style: 'transition: all .35s' }))
-      svg.appendChild(s('text', { x: left + 2 * RX(i) - 8, y: cy - 6, 'text-anchor': 'end', fill: contains ? '#ffb547' : '#868b96', 'font-size': 11.5, 'font-family': 'JetBrains Mono', text: `${mode}(${order[k]})`, style: 'transition: fill .35s' }))
+      svg.appendChild(s('ellipse', { cx: left + RX(i), cy, rx: RX(i), ry: RY(i), fill: contains ? 'rgba(255,138,61,.04)' : 'rgba(255,248,239,.0)', stroke: contains ? '#ff8a3d' : 'rgba(61,46,84,.16)', 'stroke-width': contains ? 1.5 : 1, style: 'transition: all .35s' }))
+      svg.appendChild(s('text', { x: left + 2 * RX(i) - 8, y: cy - 6, 'text-anchor': 'end', fill: contains ? '#ff8a3d' : '#8a7f9e', 'font-size': 11.5, 'font-family': 'JetBrains Mono', text: `${mode}(${order[k]})`, style: 'transition: fill .35s' }))
     }
     const r = ring(pick)
     const px = left + (2 * RX(r - 1) + 2 * RX(r)) / 2 - (r === 0 ? 8 : 4)
-    svg.appendChild(s('circle', { cx: px, cy: cy + 16, r: 5, fill: '#ffb547' }))
-    svg.appendChild(s('text', { x: px, y: cy + 34, 'text-anchor': 'middle', fill: '#ffb547', 'font-size': 10.5, 'font-family': 'JetBrains Mono', text: 'T' }))
+    svg.appendChild(s('circle', { cx: px, cy: cy + 16, r: 5, fill: '#ff8a3d' }))
+    svg.appendChild(s('text', { x: px, y: cy + 34, 'text-anchor': 'middle', fill: '#ff8a3d', 'font-size': 10.5, 'font-family': 'JetBrains Mono', text: 'T' }))
     const ins = order.filter((_, j) => (mode === 'O' ? pick <= j : mode === 'Ω' ? pick >= j : pick === j))
     narr.innerHTML = `T(n) = ${order[pick]} は <b>${ins.map((k) => `${mode}(${k})`).join(', ')}</b> に属する。` + (mode === 'O' ? '<br><span class="small">O は「上界」。増加の大きい関数の集合ほど広く、小さい集合を含む: O(n) ⊂ O(n²)。だから O(n) = O(n²) と書くのは誤り（集合として異なる）。</span>' : mode === 'Ω' ? '<br><span class="small">Ω は「下界」。包含の向きが O と逆: Ω(n²) ⊂ Ω(n) ⊂ Ω(1)。</span>' : '<br><span class="small">Θ は上と下から挟む。g(n) が（定数倍を除いて）一意に定まりやすい。</span>')
   }
@@ -324,7 +324,7 @@ export default {
   sub: 'O(g(n))・Ω(g(n))・Θ(g(n)) の意味と性質',
   en: 'Asymptotic Notation',
   tags: ['漸近記法', 'O / Ω / Θ', '上界・下界', '性質A/B'],
-  mini: '<svg viewBox="0 0 120 60"><path d="M4 56 C40 54 70 40 116 4" stroke="#ffb547" fill="none" stroke-dasharray="4 3"/><path d="M4 56 C40 52 80 36 116 20" stroke="#ece9e2" fill="none" stroke-width="1.6"/><path d="M4 56 C40 55 80 48 116 36" stroke="#5ad8ff" fill="none" stroke-dasharray="4 3"/></svg>',
+  mini: '<svg viewBox="0 0 120 60"><path d="M4 56 C40 54 70 40 116 4" stroke="#ff8a3d" fill="none" stroke-dasharray="4 3"/><path d="M4 56 C40 52 80 36 116 20" stroke="#3d2e54" fill="none" stroke-width="1.6"/><path d="M4 56 C40 55 80 48 116 36" stroke="#3fa9f5" fill="none" stroke-dasharray="4 3"/></svg>',
   goals: [
     '漸近記法がなぜ必要かを人に説明できる',
     '$O(g(n))$ の定義（上界）と性質 A・B を説明できる',

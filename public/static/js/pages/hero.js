@@ -12,17 +12,17 @@ export function heroCanvas(canvas, onShape) {
 
   function layout() {
     wide = W > 1000
-    const cx = wide ? W * 0.79 : W * 0.5
-    const cy = wide ? H * 0.42 : H * 0.2
-    const S = wide ? Math.min(W * 0.14, H * 0.28) : Math.min(W * 0.36, H * 0.14)
+    const cx = wide ? W * 0.75 : W * 0.5
+    const cy = wide ? H * 0.5 : H * 0.22
+    const S = wide ? Math.min(W * 0.17, H * 0.32) : Math.min(W * 0.4, H * 0.15)
     const name = SHAPES[shape]
     edges = []
     if (name === 'ARRAY') {
-      const gap = Math.min(wide ? 30 : 26, (W * 0.9) / N)
+      const gap = wide ? Math.min(42, (W * 0.4) / (N - 1)) : Math.min(30, (W * 0.9) / (N - 1))
       nodes.forEach((n, i) => { n.tx = cx + (i - (N - 1) / 2) * gap; n.ty = cy })
       for (let i = 0; i < N - 1; i++) edges.push([i, i + 1, 'line'])
     } else if (name === 'STACK') {
-      const gap = Math.min(26, S * 1.6 / N)
+      const gap = Math.min(wide ? 36 : 24, S * 2.1 / N)
       nodes.forEach((n, i) => { n.tx = cx + Math.sin(i * 0.5) * 2; n.ty = cy + (N - 1) * gap / 2 - i * gap })
       for (let i = 0; i < N - 1; i++) edges.push([i, i + 1, 'line'])
     } else if (name === 'QUEUE') {
@@ -68,40 +68,56 @@ export function heroCanvas(canvas, onShape) {
       if (d2 < 140 * 140) { const f = (1 - Math.sqrt(d2) / 140) * 6; const d = Math.sqrt(d2) || 1; fx += (dx / d) * f; fy += (dy / d) * f }
       n.x += fx; n.y += fy
     }
-    // edges
-    ctx.lineWidth = 1.2
-    edges.forEach(([a, b], k) => {
+    // edges (ink, rounded)
+    const INK = '#3d2e54'
+    ctx.lineCap = 'round'
+    edges.forEach(([a, b]) => {
       const A = nodes[a], B = nodes[b]
-      ctx.strokeStyle = 'rgba(233,230,223,0.22)'
+      ctx.strokeStyle = 'rgba(61,46,84,.28)'; ctx.lineWidth = wide ? 3 : 2.4
       ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke()
     })
-    // a travelling "pointer" pulse along edges (= アルゴリズムがデータ構造を辿る)
+    // travelling pointer (= アルゴリズムがデータ構造を辿る)
     const pi = Math.floor(scanT * 2.2) % Math.max(1, edges.length)
     const pf = (scanT * 2.2) % 1
     if (edges[pi]) {
       const [a, b] = edges[pi], A = nodes[a], B = nodes[b]
       const x = A.x + (B.x - A.x) * pf, y = A.y + (B.y - A.y) * pf
-      const g = ctx.createRadialGradient(x, y, 0, x, y, 26)
-      g.addColorStop(0, 'rgba(255,181,71,.55)'); g.addColorStop(1, 'rgba(255,181,71,0)')
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 26, 0, Math.PI * 2); ctx.fill()
-      ctx.strokeStyle = 'rgba(255,181,71,.9)'; ctx.lineWidth = 2
+      ctx.strokeStyle = '#ff8a3d'; ctx.lineWidth = wide ? 5 : 4
       ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(x, y); ctx.stroke()
     }
-    // nodes
+    // nodes = candy balls with sticker shadow
     const visited = new Set(); for (let k = 0; k <= pi && k < edges.length; k++) { visited.add(edges[k][0]); visited.add(edges[k][1]) }
-    const R = wide ? 13 : 10
+    const R = wide ? Math.min(19, W * 0.4 / (N - 1) * 0.44) : Math.min(14, W * 0.9 / (N - 1) * 0.42)
+    const PAL = ['#ffe0cc', '#d8eeff', '#d3f5e2', '#ebe2ff', '#fff3bf', '#ffdbe7']
     nodes.forEach((n, i) => {
       const isCur = edges[pi] && edges[pi][0] === i
-      ctx.beginPath(); ctx.arc(n.x, n.y, R, 0, Math.PI * 2)
-      ctx.fillStyle = isCur ? '#ffb547' : visited.has(i) ? 'rgba(90,216,255,.14)' : '#151a22'
-      ctx.fill()
-      ctx.lineWidth = 1.3
-      ctx.strokeStyle = isCur ? '#ffb547' : visited.has(i) ? 'rgba(90,216,255,.8)' : 'rgba(233,230,223,.35)'
-      ctx.stroke()
-      ctx.fillStyle = isCur ? '#111' : '#ece9e2'
-      ctx.font = `500 ${wide ? 10.5 : 8.5}px "JetBrains Mono", monospace`
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
-      ctx.fillText(n.v, n.x, n.y + .5)
+      const bounce = isCur ? Math.sin(now / 90) * 2.5 : 0
+      const r = isCur ? R * 1.28 : R
+      const y = n.y - bounce
+      ctx.lineWidth = wide ? 2.6 : 2.2; ctx.strokeStyle = INK
+      ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(n.x, y + (wide ? 4 : 3), r, 0, Math.PI * 2); ctx.fill()
+      ctx.beginPath(); ctx.arc(n.x, y, r, 0, Math.PI * 2)
+      ctx.fillStyle = isCur ? '#ff8a3d' : visited.has(i) ? '#3fa9f5' : PAL[i % PAL.length]
+      ctx.fill(); ctx.stroke()
+      // gloss
+      ctx.fillStyle = 'rgba(255,255,255,.55)'
+      ctx.beginPath(); ctx.ellipse(n.x - r * .36, y - r * .42, r * .26, r * .15, -0.6, 0, Math.PI * 2); ctx.fill()
+      if (isCur) {
+        // face
+        ctx.fillStyle = INK
+        const blink = (now % 3200) < 140
+        if (blink) { ctx.fillRect(n.x - r * .42, y - r * .12, r * .26, 2.2); ctx.fillRect(n.x + r * .16, y - r * .12, r * .26, 2.2) }
+        else { ctx.beginPath(); ctx.arc(n.x - r * .3, y - r * .1, r * .12, 0, 7); ctx.arc(n.x + r * .3, y - r * .1, r * .12, 0, 7); ctx.fill() }
+        ctx.strokeStyle = INK; ctx.lineWidth = 2.2
+        ctx.beginPath(); ctx.arc(n.x, y + r * .12, r * .22, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke()
+        ctx.fillStyle = 'rgba(255,92,138,.55)'
+        ctx.beginPath(); ctx.ellipse(n.x - r * .58, y + r * .18, r * .14, r * .09, 0, 0, 7); ctx.ellipse(n.x + r * .58, y + r * .18, r * .14, r * .09, 0, 0, 7); ctx.fill()
+      } else {
+        ctx.fillStyle = visited.has(i) ? '#fff' : INK
+        ctx.font = `700 ${wide ? 13 : 10.5}px "Fredoka", sans-serif`
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+        ctx.fillText(n.v, n.x, y + 1)
+      }
     })
     raf = requestAnimationFrame(frame)
   }

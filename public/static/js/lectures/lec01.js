@@ -65,16 +65,16 @@ printf("NO\\n");  // S は存在しない`
 function algoDiagram() {
   const svg = svgRoot(760, 230)
   const box = (x, y, w, hh, label, sub, cls) => s('g', {},
-    s('rect', { x, y, width: w, height: hh, rx: 12, fill: cls === 'am' ? 'rgba(255,181,71,.08)' : '#181d27', stroke: cls === 'am' ? '#ffb547' : 'rgba(233,230,223,.18)' }),
-    s('text', { x: x + w / 2, y: y + hh / 2 - (sub ? 9 : 0), 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: cls === 'am' ? '#ffb547' : '#ece9e2', 'font-size': 17, 'font-weight': 700, 'font-family': 'Zen Kaku Gothic New', text: label }),
-    sub ? s('text', { x: x + w / 2, y: y + hh / 2 + 14, 'text-anchor': 'middle', fill: '#868b96', 'font-size': 11.5, 'font-family': 'JetBrains Mono', text: sub }) : null)
+    s('rect', { x, y, width: w, height: hh, rx: 12, fill: cls === 'am' ? 'rgba(255,138,61,.08)' : '#ffffff', stroke: cls === 'am' ? '#ff8a3d' : 'rgba(61,46,84,.18)' }),
+    s('text', { x: x + w / 2, y: y + hh / 2 - (sub ? 9 : 0), 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: cls === 'am' ? '#ff8a3d' : '#3d2e54', 'font-size': 17, 'font-weight': 700, 'font-family': 'Zen Kaku Gothic New', text: label }),
+    sub ? s('text', { x: x + w / 2, y: y + hh / 2 + 14, 'text-anchor': 'middle', fill: '#8a7f9e', 'font-size': 11.5, 'font-family': 'JetBrains Mono', text: sub }) : null)
   const flow = (x1, x2, y) => s('g', {},
-    s('line', { x1, y1: y, x2, y2: y, stroke: 'rgba(233,230,223,.3)', 'stroke-width': 1.5, 'stroke-dasharray': '4 5' }),
-    s('circle', { r: 4, fill: '#5ad8ff' }, s('animateMotion', { dur: '1.8s', repeatCount: 'indefinite', path: `M${x1},${y} L${x2},${y}` })),
-    s('path', { d: `M${x2 - 8},${y - 5} L${x2},${y} L${x2 - 8},${y + 5}`, stroke: 'rgba(233,230,223,.5)', fill: 'none', 'stroke-width': 1.5 }))
+    s('line', { x1, y1: y, x2, y2: y, stroke: 'rgba(61,46,84,.3)', 'stroke-width': 1.5, 'stroke-dasharray': '4 5' }),
+    s('circle', { r: 4, fill: '#3fa9f5' }, s('animateMotion', { dur: '1.8s', repeatCount: 'indefinite', path: `M${x1},${y} L${x2},${y}` })),
+    s('path', { d: `M${x2 - 8},${y - 5} L${x2},${y} L${x2 - 8},${y + 5}`, stroke: 'rgba(61,46,84,.5)', fill: 'none', 'stroke-width': 1.5 }))
   svg.append(
-    s('rect', { x: 210, y: 20, width: 340, height: 190, rx: 18, fill: 'none', stroke: 'rgba(90,216,255,.35)', 'stroke-dasharray': '6 6' }),
-    s('text', { x: 380, y: 196, 'text-anchor': 'middle', fill: '#5ad8ff', 'font-size': 12, 'font-family': 'JetBrains Mono', text: '計算機モデル（使える操作の集合）' }),
+    s('rect', { x: 210, y: 20, width: 340, height: 190, rx: 18, fill: 'none', stroke: 'rgba(63,169,245,.35)', 'stroke-dasharray': '6 6' }),
+    s('text', { x: 380, y: 196, 'text-anchor': 'middle', fill: '#3fa9f5', 'font-size': 12, 'font-family': 'JetBrains Mono', text: '計算機モデル（使える操作の集合）' }),
     box(20, 80, 150, 70, '入力', 'a = 110, b = 45'),
     box(270, 62, 220, 106, 'アルゴリズム', '有限の機械的操作', 'am'),
     box(590, 80, 150, 70, '出力', 'gcd = 5'),
@@ -135,8 +135,8 @@ function euclidLab() {
     tiles = euclidTiles(a, b)
     const W = 400, sc = W / a, Hh = b * sc
     svg = svgRoot(W + 2, Hh + 2, { style: { maxHeight: '300px', width: '100%' } })
-    svg.appendChild(s('rect', { x: 1, y: 1, width: W, height: Hh, fill: 'none', stroke: 'rgba(233,230,223,.35)', 'stroke-dasharray': '3 4' }))
-    const pal = ['#ffb547', '#5ad8ff', '#b8f36b', '#b59cff', '#ff6b81', '#ffd28a', '#9fe6ff']
+    svg.appendChild(s('rect', { x: 1, y: 1, width: W, height: Hh, fill: 'none', stroke: 'rgba(61,46,84,.35)', 'stroke-dasharray': '3 4' }))
+    const pal = ['#ff8a3d', '#3fa9f5', '#2fbf71', '#9b7bff', '#ff5c8a', '#ffd23f', '#8fd0ff']
     rects = tiles.map((t) => {
       const r = s('rect', { x: 1 + t.x * sc, y: 1 + t.y * sc, width: Math.max(.6, t.s * sc), height: Math.max(.6, t.s * sc), fill: pal[t.step % pal.length], 'fill-opacity': .16, stroke: pal[t.step % pal.length], 'stroke-width': 1, opacity: 0, style: 'transition: opacity .45s' })
       svg.appendChild(r)
@@ -246,7 +246,7 @@ function linearLab() {
     row.cells.forEach((c, i) => (c.querySelector('.v').textContent = arr[i]))
     ptr = s('g', { style: 'transition: transform .35s cubic-bezier(.2,.8,.2,1)' },
       s('text', { x: row.cw / 2, y: 8, 'text-anchor': 'middle', class: 'lbl am', text: 'i' }),
-      s('path', { d: `M${row.cw / 2 - 6},14 L${row.cw / 2},24 L${row.cw / 2 + 6},14`, fill: '#ffb547' }))
+      s('path', { d: `M${row.cw / 2 - 6},14 L${row.cw / 2},24 L${row.cw / 2 + 6},14`, fill: '#ff8a3d' }))
     svg.append(row.g, ptr)
     stage.innerHTML = ''
     stage.appendChild(svg)
@@ -297,10 +297,10 @@ function growthLab() {
   const nOut = h('span.mono.amber', { style: { fontSize: '20px' } })
   const bars = h('div', { style: { display: 'grid', gap: '12px' } })
   const rows = [
-    ['最悪 6n+1', (n) => 6 * n + 1, '#ff6b81', '最後に一致'],
-    ['平均 ≈ 3n', (n) => 3 * n, '#ffb547', '等確率で一致'],
-    ['最良 7', () => 7, '#b8f36b', '先頭で一致'],
-    ['二分探索 ≈ log₂n', (n) => Math.max(1, Math.ceil(Math.log2(n))), '#5ad8ff', '整列済みの数列なら'],
+    ['最悪 6n+1', (n) => 6 * n + 1, '#ff5c8a', '最後に一致'],
+    ['平均 ≈ 3n', (n) => 3 * n, '#ff8a3d', '等確率で一致'],
+    ['最良 7', () => 7, '#2fbf71', '先頭で一致'],
+    ['二分探索 ≈ log₂n', (n) => Math.max(1, Math.ceil(Math.log2(n))), '#3fa9f5', '整列済みの数列なら'],
   ]
   const els = rows.map(([k, , c, note]) => {
     const fill = h('div', { style: { height: '100%', width: '0%', background: c, borderRadius: '4px', transition: 'width .25s', minWidth: '2px' } })
@@ -362,10 +362,10 @@ function subsetLab() {
     const n = a.length
     tiles.forEach((t, i) => {
       const st = t.el.style
-      if (i < f.i || (f.done && i <= f.i)) { st.background = 'var(--cyan-soft)'; st.borderColor = 'rgba(90,216,255,.35)'; st.color = 'var(--cyan)' }
-      else if (i === f.i) { st.background = 'var(--amber-soft)'; st.borderColor = 'var(--amber)'; st.color = 'var(--amber)' }
+      if (i < f.i || (f.done && i <= f.i)) { st.background = 'var(--cyan-soft)'; st.borderColor = 'rgba(63,169,245,.35)'; st.color = 'var(--cyan-t)' }
+      else if (i === f.i) { st.background = 'var(--amber-soft)'; st.borderColor = 'var(--amber)'; st.color = 'var(--amber-t)' }
       else { st.background = 'var(--bg)'; st.borderColor = 'var(--line)'; st.color = 'var(--mute-2)' }
-      if (f.done && f.found === i) { st.background = 'var(--lime-soft)'; st.borderColor = 'var(--lime)'; st.color = 'var(--lime)' }
+      if (f.done && f.found === i) { st.background = 'var(--lime-soft)'; st.borderColor = 'var(--lime)'; st.color = 'var(--lime-t)' }
     })
     bitsView.innerHTML = ''
     range(n).forEach((j) => {
@@ -424,7 +424,7 @@ export default {
   sub: 'アルゴリズム・データ構造・計算機モデル・時間計算量',
   en: 'Computation & Algorithms',
   tags: ['gcd', 'RAM', '線形探索', '部分和', '時間計算量'],
-  mini: '<svg viewBox="0 0 120 60"><rect x="4" y="10" width="72" height="40" fill="none" stroke="#ffb547"/><rect x="4" y="10" width="40" height="40" fill="rgba(255,181,71,.15)" stroke="#ffb547"/><rect x="44" y="10" width="32" height="32" fill="rgba(90,216,255,.15)" stroke="#5ad8ff"/></svg>',
+  mini: '<svg viewBox="0 0 120 60"><rect x="4" y="10" width="72" height="40" fill="none" stroke="#ff8a3d"/><rect x="4" y="10" width="40" height="40" fill="rgba(255,138,61,.15)" stroke="#ff8a3d"/><rect x="44" y="10" width="32" height="32" fill="rgba(63,169,245,.15)" stroke="#3fa9f5"/></svg>',
   goals: [
     'アルゴリズム・データ構造・計算機モデル・時間計算量を人に説明できる',
     '最大公約数を求めるアルゴリズム（互除法）を説明できる',

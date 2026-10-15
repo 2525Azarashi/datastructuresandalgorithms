@@ -1,3 +1,4 @@
+import { avatar, moodOf } from './chars.js'
 // ---------- tiny DOM helpers ----------
 export const $ = (s, r = document) => r.querySelector(s)
 export const $$ = (s, r = document) => [...r.querySelectorAll(s)]
@@ -107,7 +108,7 @@ export function toast(msg) {
 export function lab({ title, hint, body, foot, id }) {
   return h('figure.lab.reveal', { id, style: { margin: '28px 0' } },
     h('div.lab-head',
-      h('div.t', h('span.dot'), title),
+      h('div.t', h('span.dot', { 'aria-hidden': 'true', html: '<i></i><i></i><i></i>' }), title),
       hint ? h('div.hint', hint) : null),
     h('div.lab-body', body),
     foot ? h('div.lab-foot', foot) : null,
@@ -222,16 +223,17 @@ export function talk(script) {
   script.split('\n').forEach((raw) => {
     const t = raw.trim()
     if (!t) return
-    const m = t.match(/^([SR])[:：]\s*(.*)$/)
-    if (m) lines.push({ who: m[1], text: m[2] })
+    const m = t.match(/^([SR])(?:\[(\w+)\])?[:：]\s*(.*)$/)
+    if (m) lines.push({ who: m[1], mood: m[2], text: m[3] })
     else if (lines.length) lines[lines.length - 1].text += '<br>' + t
   })
-  return h('div.talk', lines.map((l, i) => {
-    const c = CAST[l.who]
-    return h(`div.line.${c.cls}.reveal`, { style: { transitionDelay: `${(i % 4) * 70}ms` } },
-      h('div.av', { 'aria-hidden': 'true' }, c.init),
-      h('div.bubble-wrap', h('div.who', c.name), h('div.bubble', { html: l.text })))
-  }))
+  return h('div.talk', lines.map((l, i) => talkLine(l.who, l.text, l.mood, i)))
+}
+export function talkLine(who, text, mood, i = 0, extraCls = '') {
+  const c = CAST[who]
+  return h(`div.line.${c.cls}.reveal${extraCls}`, { style: { transitionDelay: `${(i % 4) * 70}ms` } },
+    h('div.av', { 'aria-hidden': 'true', html: avatar(who, mood || moodOf(who, text)) }),
+    h('div.bubble-wrap', h('div.who', c.name, h('i', c.role)), h('div.bubble', { html: text })))
 }
 /** 章末の「ここだけ押さえる」 */
 export const point = (htmlStr) => h('div.point.reveal', h('div.point-k', 'POINT — ここだけ押さえる'), h('p.tldr.mt0', { html: htmlStr }))

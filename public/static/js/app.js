@@ -1,12 +1,13 @@
 import { h, $, $$, observeReveal, typeset, store } from './lib/ui.js'
 import { LECTURES, UPCOMING } from './lectures/index.js'
+import { avatar } from './lib/chars.js'
 import { renderHome } from './pages/home.js'
 import { renderLecture } from './pages/lecture.js'
 import { renderCheatsheet } from './pages/cheatsheet.js'
 import { renderGlossary } from './pages/glossary.js'
 import { openPalette } from './pages/palette.js'
 
-const BRAND = `<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect x=".5" y=".5" width="31" height="31" rx="8" fill="none" stroke="rgba(233,230,223,.18)"/><path d="M9 22 16 10 23 22" stroke="#ece9e2" stroke-width="1.4" fill="none"/><circle cx="9" cy="22" r="3" fill="#ffb547"/><circle cx="16" cy="10" r="3" fill="#ece9e2"/><circle cx="23" cy="22" r="3" fill="#5ad8ff"/></svg>`
+const BRAND = `<svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="4" width="36" height="34" rx="12" fill="#3d2e54"/><rect x="2" y="1.5" width="36" height="34" rx="12" fill="#ffd23f" stroke="#3d2e54" stroke-width="2.4"/><path d="M12 24 20 12 28 24" stroke="#3d2e54" stroke-width="2.4" fill="none" stroke-linejoin="round"/><circle cx="12" cy="24" r="4.2" fill="#ff8a3d" stroke="#3d2e54" stroke-width="2.2"/><circle cx="20" cy="12" r="4.2" fill="#fff" stroke="#3d2e54" stroke-width="2.2"/><circle cx="28" cy="24" r="4.2" fill="#3fa9f5" stroke="#3d2e54" stroke-width="2.2"/></svg>`
 
 function header() {
   const el = $('#site-header')
@@ -30,8 +31,8 @@ function onScroll() {
 function footer() {
   $('#site-footer').innerHTML = ''
   $('#site-footer').append(h('div.wrap',
-    h('div', 'DS&A Lab — 「データ構造とアルゴリズム」講義の理解を深めるための非公式学習サイト'),
-    h('div.mono', `${LECTURES.length} lectures · built for intuition`)))
+    h('div.foot-cast', h('span', { html: avatar('S', 'happy') + avatar('R', 'happy') }), h('span', 'またね！ — DS&A Lab は「データ構造とアルゴリズム」講義の非公式学習サイトです')),
+    h('div', `${LECTURES.length} lectures · made with ♥ for intuition`)))
 }
 
 let cleanup = null
@@ -40,6 +41,7 @@ function route() {
   const [path, anchor] = hash.split('?a=')
   const main = $('#app')
   cleanup?.()
+  $('#palette-root').innerHTML = ''
   ;(window.__players || []).forEach((p) => p.stop())
   window.__players = []
   cleanup = null

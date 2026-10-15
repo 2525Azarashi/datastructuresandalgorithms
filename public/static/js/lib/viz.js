@@ -36,7 +36,7 @@ export function layoutBinary(root, L, R, { dx = 50, dy = 66, pad = 30 } = {}) {
 /** draw graph/tree. edges: [[u,v,cls?]] ; directed: arrows. returns {svg, nodeEl, edgeEl} */
 export function drawGraph({ pos, edges, W, H, r = 16, directed = false, labels, onNode, edgeLabel }) {
   const svg = svgRoot(W, H, { role: 'img', style: `max-width:${Math.round(W * 1.25)}px;margin:0 auto` })
-  const defs = s('defs', {}, s('marker', { id: 'arr' + (drawGraph.k = (drawGraph.k || 0) + 1), viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, s('path', { d: 'M0 0 10 5 0 10z', fill: 'rgba(233,230,223,.45)' })))
+  const defs = s('defs', {}, s('marker', { id: 'arr' + (drawGraph.k = (drawGraph.k || 0) + 1), viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, s('path', { d: 'M0 0 10 5 0 10z', fill: 'rgba(61,46,84,.45)' })))
   const mid = 'arr' + drawGraph.k
   svg.appendChild(defs)
   const gE = s('g'), gN = s('g')
