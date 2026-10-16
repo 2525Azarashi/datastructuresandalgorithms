@@ -1,4 +1,5 @@
 import { h, table, callout } from '../lib/ui.js'
+import { growthChart } from './infographics.js'
 
 // [講義, データ構造, 実現方法, 操作, 計算量]
 const ROWS = [
@@ -44,7 +45,8 @@ export function renderCheatsheet(root, LECTURES) {
     h('section.page-hero.wrap', h('div.eyebrow', 'Cheatsheet'), h('h1', '計算量表'), h('p', '講義で扱った全ての操作のコスト。緑 = 定数時間、オレンジ = 多項式・対数、ピンク = 重い／大きい。講義が増えると自動で行が増えます。')),
     h('div.wrap', { style: { paddingBottom: '120px' } },
       h('div.eyebrow', { style: { margin: '10px 0' } }, 'Order of growth'),
-      h('div.formula', { html: '' , style: { fontFamily: 'var(--f-mono)', fontSize: '15px', textAlign: 'center' } }, '1  <  log n  <  n  <  n log n  <  n²  <  n³  <  2ⁿ  <  10ⁿ'),
+      growthChart(),
+      h('div.order-chain.kt-watch', ['1', 'log n', 'n', 'n log n', 'n²', 'n³', '2ⁿ', '10ⁿ'].flatMap((t, i, a) => [h('span.oc.' + 'gbbyoopp'[i], { style: { '--i': i } }, t), i < a.length - 1 ? h('span.oc-lt', { style: { '--i': i } }, '<') : null])),
       h('div.eyebrow', { style: { margin: '36px 0 10px' } }, 'Data structures'),
       table(['回', 'データ構造', '実現方法', '操作', '計算量'], ROWS.filter((r) => r[0] <= max).map((r) => [`<a class="lec-pill" href="#/lecture/${r[0]}">第${r[0]}回</a>`, r[1], r[2], r[3], r[4]]), (c, ri, ci) => (ci === 4 ? cls(c) : '')),
       h('div.eyebrow', { style: { margin: '36px 0 10px' } }, 'Algorithms'),

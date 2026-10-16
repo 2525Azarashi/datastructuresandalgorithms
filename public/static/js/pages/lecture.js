@@ -1,5 +1,6 @@
 import { h, $$, store } from '../lib/ui.js'
 import { avatar } from '../lib/chars.js'
+import { lectureInfo } from './infographics.js'
 import { quiz } from '../lib/quiz.js'
 
 export function renderLecture(root, lec, ALL) {
@@ -33,7 +34,7 @@ export function renderLecture(root, lec, ALL) {
   const content = h('div.lec-content')
   chapters.forEach((c, i) => {
     const sec = h('section.chapter', { id: c.id },
-      h('div.chapter-head.reveal', h('div.k', `${String(i + 1).padStart(2, '0')} — ${c.k}`), h('h2', c.title)))
+      h('div.chapter-head', h('div.k.reveal', h('span.k-n', String(i + 1).padStart(2, '0')), h('span', c.k)), h('h2', c.title)))
     c.build(sec)
     content.appendChild(sec)
   })
@@ -45,6 +46,12 @@ export function renderLecture(root, lec, ALL) {
 
   root.classList.add('lec-page'); root.dataset.tone = String(lec.n % 4)
   root.append(hero, h('div.wrap.lec-body', toc, content))
+  hero.querySelector('.lec-hero-grid > div').appendChild(lectureInfo(lec, content))
+  // chapter-progress rail (右端の章ドット)
+  const rail = h('nav.ch-rail', { 'aria-hidden': 'true' }, chapters.map((c, i) => h('a', { href: `#/lecture/${lec.n}?a=${c.id}`, title: c.title, onclick: (e) => { e.preventDefault(); document.getElementById(c.id)?.scrollIntoView({ behavior: 'smooth' }) } }, h('i'), h('span', c.title))))
+  document.body.appendChild(rail)
+  rail.style.setProperty('--accent', getComputedStyle(root).getPropertyValue('--accent'))
+  const railLinks = [...rail.children]
 
   // scroll spy
   const secs = chapters.map((c) => document.getElementById(c.id))
@@ -52,9 +59,11 @@ export function renderLecture(root, lec, ALL) {
     let cur = 0
     secs.forEach((s, i) => { if (s && s.getBoundingClientRect().top < innerHeight * 0.35) cur = i })
     tocLinks.forEach((a, i) => a.classList.toggle('active', i === cur))
+    railLinks.forEach((a, i) => { a.classList.toggle('active', i === cur); a.classList.toggle('done', i < cur) })
+    rail.classList.toggle('show', scrollY > innerHeight * 0.7)
   }
   addEventListener('scroll', spy, { passive: true })
   spy()
   const cleanups = lec._cleanups || []
-  return () => { removeEventListener('scroll', spy); cleanups.forEach((f) => f()); lec._cleanups = [] }
+  return () => { rail.remove(); removeEventListener('scroll', spy); cleanups.forEach((f) => f()); lec._cleanups = [] }
 }

@@ -1,6 +1,7 @@
 import { h, $, $$, observeReveal, typeset, store } from './lib/ui.js'
 import { LECTURES, UPCOMING } from './lectures/index.js'
 import { avatar } from './lib/chars.js'
+import { kinetic, curtain, initGlobalMotion } from './lib/motion.js'
 import { renderHome } from './pages/home.js'
 import { renderLecture } from './pages/lecture.js'
 import { renderCheatsheet } from './pages/cheatsheet.js'
@@ -60,6 +61,7 @@ function route() {
   $$('[data-nav]').forEach((a) => a.classList.toggle('active', a.dataset.nav === nav))
   typeset(page)
   observeReveal(page)
+  kinetic(page)
   if (anchor) requestAnimationFrame(() => document.getElementById(anchor)?.scrollIntoView())
   else scrollTo({ top: 0, behavior: 'instant' })
   onScroll()
@@ -70,7 +72,14 @@ addEventListener('keydown', (e) => {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openPalette() }
   else if (e.key === '/' && !e.target.matches('input,textarea,select')) { e.preventDefault(); openPalette() }
 })
-addEventListener('hashchange', route)
+let lastPath = null
+addEventListener('hashchange', () => {
+  const p = (location.hash.replace(/^#/, '') || '/').split('?a=')[0]
+  if (lastPath !== null && p !== lastPath) { curtain(); setTimeout(route, 420) } else route()
+  lastPath = p
+})
+lastPath = (location.hash.replace(/^#/, '') || '/').split('?a=')[0]
+initGlobalMotion()
 header()
 footer()
 route()

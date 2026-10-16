@@ -2,6 +2,8 @@ import { h, html, $$, talk } from '../lib/ui.js'
 import { avatar } from '../lib/chars.js'
 import { heroCanvas } from './hero.js'
 import { quizProgress } from '../lib/quiz.js'
+import { splitText, reactiveType, rotateWord, marquee } from '../lib/motion.js'
+import { growthRace, siteStats } from './infographics.js'
 
 const SHAPE_JP = { ARRAY: '配列', STACK: 'スタック', QUEUE: '循環キュー', TREE: '2分木', GRAPH: 'グラフ' }
 
@@ -23,6 +25,7 @@ export function renderHome(root, LECTURES, UPCOMING) {
         h('span.line', h('span', 'Same data,')),
         h('span.line', h('span', h('em', 'different'), ' rules,')),
         h('span.line', h('span', h('span.thin', 'new'), ' ', h('span.speed-word', 'speed!')))),
+      h('div.hero-rot', { 'aria-live': 'off' }, h('span.hero-rot-k', '規則を変えると →'), h('span.hero-rot-w', h('span.rot-word', 'スタック'))),
       h('div.hero-sub',
         h('div',
           h('p', { html: '同じ 15 個の数でも、<b>並べ方の規則</b>が変わると、できることも速さも変わる。<br><b class="amber">サカイ</b>先輩と<b class="cyan">リョウガ</b>くんのおしゃべりを聞きながら、<b>さわって</b>わかる「データ構造とアルゴリズム」の遊び場です。' }),
@@ -30,6 +33,11 @@ export function renderHome(root, LECTURES, UPCOMING) {
             h('a.btn.primary', { href: `#/lecture/${LECTURES[0].n}` }, '第1回からはじめる', h('span.arr', '→')),
             h('a.btn', { href: '#lectures' , onclick: (e) => { e.preventDefault(); document.getElementById('lectures').scrollIntoView({ behavior: 'smooth' }) } }, '講義一覧'))),
         h('div', labels, h('div.hero-hint', '↑ 押すと形が変わるよ')))))
+  const title = hero.querySelector('.hero-title')
+  title.querySelectorAll('.line > span').forEach((sp) => splitText(sp))
+  const offReact = reactiveType(title)
+  const rw = hero.querySelector('.rot-word')
+  const offRot = rotateWord(rw, ['スタック', '待ち行列', '2分木', 'グラフ', '連結リスト', '配列'])
   const hc = heroCanvas(canvas, (name) => $$('span', labels).forEach((s) => s.classList.toggle('on', s.dataset.k === name)))
   $$('span', labels).forEach((s, i) => { s.style.cursor = 'pointer'; s.addEventListener('click', () => hc.set(i)) })
 
@@ -66,6 +74,25 @@ S: 口で言うより見たほうが早い。第1回から一緒に動かして�
   })
   UPCOMING.forEach((u) => list.appendChild(h('div.lec-row.soon', h('div.lec-num', String(u.n).padStart(2, '0')), h('div', h('div.lec-title', h('small', `LECTURE ${String(u.n).padStart(2, '0')} — 講義資料の追加待ち`), u.title)), h('div.lec-tags', h('span.tag', 'coming soon')), h('div'))))
 
+  const mq = (words, dir, cls) => {
+    const inner = h('div.mq-inner', [...words, ...words].map((w, i) => h(`span.mq-w${i % 3 === 1 ? '.alt' : i % 3 === 2 ? '.out' : ''}`, w)))
+    return { el: h(`div.mq-row.${cls}`, inner), inner, dir }
+  }
+  const m1 = mq(['ARRAY', '✦', 'STACK', '✦', 'QUEUE', '✦', 'TREE', '✦', 'GRAPH', '✦', 'LIST', '✦'], 1, 'a')
+  const m2 = mq(['O(1)', '●', 'O(log n)', '●', 'O(n)', '●', 'O(n log n)', '●', 'O(n²)', '●', 'O(2ⁿ)', '●'], -1, 'b')
+  const marqueeSec = h('section.mq', { 'aria-hidden': 'true' }, m1.el, m2.el)
+  const offMq = marquee([m1, m2].map((m) => ({ el: m.inner, dir: m.dir })))
+
+  const race = growthRace()
+  const stats = h('section.section.wrap', { style: { paddingBottom: 0 } },
+    h('div.sec-head.reveal', h('div', h('div.eyebrow', 'By the numbers'), h('h2', 'いま、ここまで')), h('p', '講義が届くたびに、この数字は増えていきます。')),
+    siteStats([
+      [LECTURES.length, '講義', '<svg viewBox="0 0 40 40"><rect x="7" y="6" width="26" height="30" rx="5" fill="#fff" stroke="#3d2e54" stroke-width="2.5"/><path d="M13 15h14M13 21h14M13 27h8" stroke="#3d2e54" stroke-width="2.5" stroke-linecap="round"/></svg>', 'c1'],
+      [LECTURES.reduce((a, l) => a + l.chapters.length, 0), '章', '<svg viewBox="0 0 40 40"><path d="M6 10h11l3 4h14v18H6z" fill="#fff" stroke="#3d2e54" stroke-width="2.5" stroke-linejoin="round"/></svg>', 'c2'],
+      [23, '可視化ラボ', '<svg viewBox="0 0 40 40"><circle cx="11" cy="28" r="5" fill="#ff8a3d" stroke="#3d2e54" stroke-width="2.5"/><circle cx="29" cy="28" r="5" fill="#fff" stroke="#3d2e54" stroke-width="2.5"/><circle cx="20" cy="11" r="5" fill="#3fa9f5" stroke="#3d2e54" stroke-width="2.5"/><path d="M14 24l4-8M26 24l-4-8M16 28h8" stroke="#3d2e54" stroke-width="2.5"/></svg>', 'c3'],
+      [LECTURES.reduce((a, l) => a + l.quiz.length, 0), '類題', '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#fff" stroke="#3d2e54" stroke-width="2.5"/><path d="M16 16a4 4 0 1 1 5 4c-1 .5-1 1.5-1 3" stroke="#3d2e54" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="20" cy="28" r="1.8" fill="#3d2e54"/></svg>', 'c4'],
+    ]))
+
   const lectures = h('section.section.wrap#lectures',
     h('div.sec-head.reveal',
       h('div', h('div.eyebrow', 'Index'), h('h2', h('span.squig', 'Lectures'))),
@@ -79,6 +106,6 @@ S: 口で言うより見たほうが早い。第1回から一緒に動かして�
       h('a.tool-card', { href: '#/glossary' }, h('div.glyph', 'A → Z'), h('div', h('h3', '用語集'), h('p', '講義に出てきた用語を検索。定義の載っている章へ一発で飛べます。'))),
       h('button.tool-card', { style: { textAlign: 'left', cursor: 'pointer', font: 'inherit', color: 'inherit' }, onclick: () => import('./palette.js').then((m) => m.openPalette()) }, h('div.glyph', '⌘K  /'), h('div', h('h3', 'クイック検索'), h('p', '章・用語・可視化にキーボードだけで移動。どのページからでも使えます。')))))
 
-  root.append(hero, principles, cast, lectures, tools)
-  return () => hc.destroy()
+  root.append(hero, marqueeSec, principles, cast, race.el, stats, lectures, tools)
+  return () => { hc.destroy(); offReact(); offRot(); offMq(); race.destroy() }
 }
