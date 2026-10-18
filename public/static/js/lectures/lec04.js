@@ -408,6 +408,91 @@ function rebuildLab() {
       h('div.lab-grid', h('div', { style: { display: 'grid', gap: '10px', alignContent: 'start' } }, stage, res), h('div', { style: { display: 'grid', gap: '10px', alignContent: 'start' } }, narr, stepsBox))) })
 }
 
+
+/* ========== LAB 4-7: path & cycle explorer ========== */
+function pathLab() {
+  const presets = {
+    house: { n: 5, E: [[0, 1], [0, 2], [1, 2], [1, 3], [2, 4], [3, 4]] },
+    lecture: { n: 4, E: [[0, 1], [0, 2], [1, 2], [1, 3]] },
+    two: { n: 7, E: [[0, 1], [1, 2], [2, 0], [3, 4], [4, 5], [5, 6], [6, 3], [3, 5]] },
+  }
+  let P = presets.house, walk = []
+  const edgeIn = h('input.txt', { 'aria-label': '辺の一覧', style: { width: '300px' } })
+  const stage = h('div.stage', { style: { display: 'grid', placeItems: 'center' } })
+  const narr = h('div.narr'), walkC = h('div.chips'), sum = h('div.stats'), cyc = h('div.log', { style: { maxHeight: '170px' } })
+  let G
+  const parseEdges = (txt) => {
+    const E = []; let n = 0
+    txt.split(/[\s,]+/).filter(Boolean).forEach((t) => { const m = t.match(/^(\d+)-(\d+)$/); if (m && m[1] !== m[2]) { const u = +m[1], v = +m[2]; E.push([Math.min(u, v), Math.max(u, v)]); n = Math.max(n, u + 1, v + 1) } })
+    return { n, E: E.filter((e, i) => E.findIndex((f) => f[0] === e[0] && f[1] === e[1]) === i) }
+  }
+  const analyse = (n, adj) => {
+    // all simple cycles (by vertex sequence, canonical start = min, one direction)
+    const cycles = []
+    const dfs = (start, u, path, seen) => {
+      for (const v of adj[u]) {
+        if (v === start && path.length >= 3) { if (path[1] < path[path.length - 1]) cycles.push(path.slice()) }
+        else if (!seen.has(v) && v > start) { seen.add(v); path.push(v); dfs(start, v, path, seen); path.pop(); seen.delete(v) }
+      }
+    }
+    for (let s0 = 0; s0 < n; s0++) dfs(s0, s0, [s0], new Set([s0]))
+    // components
+    const comp = Array(n).fill(-1); let c = 0
+    for (let i = 0; i < n; i++) if (comp[i] < 0) { const st = [i]; comp[i] = c; while (st.length) { const u = st.pop(); adj[u].forEach((v) => { if (comp[v] < 0) { comp[v] = c; st.push(v) } }) } c++ }
+    return { cycles, comps: c }
+  }
+  const build = () => {
+    const pos = circle(P.n, 360, 270, 105)
+    G = drawGraph({ pos, edges: P.E, W: 360, H: 270, r: 18, onNode: (i) => clickNode(i) })
+    stage.innerHTML = ''; stage.appendChild(G.svg)
+    const adj = range(P.n).map(() => []); P.E.forEach(([u, v]) => { adj[u].push(v); adj[v].push(u) })
+    const { cycles, comps } = analyse(P.n, adj)
+    const tri = cycles.filter((c) => c.length === 3).length
+    const longest = cycles.reduce((a, c) => Math.max(a, c.length), 0)
+    sum.innerHTML = ''
+    sum.append(stat('節点 n', String(P.n)), stat('辺数 m', `${P.E.length * 2}<small>（線分×2）</small>`, 'hl'), stat('連結成分', String(comps), 'cy'),
+      stat('長さ 3 の単純閉路', `${tri}<small>個</small>`, 'li'), stat('最長の単純閉路', longest ? `${longest}` : 'なし', 'li'))
+    cyc.innerHTML = cycles.length ? cycles.sort((a, b) => a.length - b.length).map((c) => `<div>長さ <b>${c.length}</b>: ${[...c, c[0]].join(' → ')}</div>`).join('') : '<div>単純閉路なし（＝ 森）</div>'
+    G.adj = adj
+    walk = []; render()
+  }
+  const isEdge = (u, v) => G.adj[u].includes(v)
+  const clickNode = (i) => {
+    if (!walk.length || isEdge(walk[walk.length - 1], i)) walk.push(i)
+    else { toast(`${walk[walk.length - 1]} と ${i} の間に辺がありません`); return }
+    render()
+  }
+  const render = () => {
+    setNodeClass(G.nodeEl, (i) => (i === walk[walk.length - 1] ? 'cur' : walk.includes(i) ? 'vis' : ''))
+    Object.values(G.edgeEl).forEach((e) => e.setAttribute('class', 'edge'))
+    for (let k = 1; k < walk.length; k++) G.edgeEl[`${walk[k - 1]}-${walk[k]}`]?.setAttribute('class', 'edge on')
+    walkC.innerHTML = ''
+    walk.length ? walk.forEach((v, k) => { if (k) walkC.appendChild(h('span.small', '→')); walkC.appendChild(h('span.chip.am', v)) }) : walkC.appendChild(h('span.chip.empty', '節点をクリック'))
+    const L = walk.length - 1
+    if (L < 1) { narr.innerHTML = '節点を順にクリックして<b>路</b>を作ってみよう（辺があるところだけ進める）。'; return }
+    const closed = walk[0] === walk[L]
+    const inner = closed ? walk.slice(0, L) : walk
+    const simple = new Set(inner).size === inner.length
+    let kind
+    if (closed) kind = simple && L >= 3 ? '<b class="l">単純閉路</b>（同じ節点を通らない閉路）' : '<b>閉路</b>（でも同じ節点を 2 回通るので単純ではない）'
+    else kind = simple ? '<b class="c">単純路</b>（同じ節点を通らない路）' : '<b>路</b>（同じ節点を 2 回通っている）'
+    narr.innerHTML = `長さ <b>${L}</b>（辺の数）の ${kind}`
+  }
+  const root = lab({
+    title: 'LAB 4-7 — 路・閉路エクスプローラ', hint: '節点を順にクリックして路を作る',
+    body: h('div',
+      h('div.ctrl-row', seg([['house', '家の形'], ['lecture', '講義の例'], ['two', '2 つの成分']], 'house', (v) => { P = presets[v]; edgeIn.value = P.E.map((e) => e.join('-')).join(' '); build() }),
+        h('div.field', h('label', '辺 ='), edgeIn), h('button.op', { onclick: () => { const r = parseEdges(edgeIn.value); if (r.n) { P = r; build() } } }, '描く'),
+        h('button.op.ghost', { onclick: () => { walk = []; render() } }, '路をリセット'), h('button.op.ghost', { onclick: () => { walk.pop(); render() } }, '1 つ戻す')),
+      h('div.sep'),
+      h('div.lab-grid', h('div', { style: { display: 'grid', gap: '10px', alignContent: 'start' } }, stage, h('div.kv-row', h('span.row-label', '路'), walkC), narr),
+        h('div', { style: { display: 'grid', gap: '10px', alignContent: 'start' } }, sum, h('div.arr-name', 'すべての単純閉路（節点集合が同じものは 1 個）'), cyc))),
+  })
+  edgeIn.value = P.E.map((e) => e.join('-')).join(' ')
+  build()
+  return root
+}
+
 /* ========== static diagram: kinds of graphs ========== */
 function kindsDiagram() {
   const mk = (directed, weighted) => {
@@ -455,6 +540,11 @@ S: 4 つだけ押さえよう。`),
           card('閉路', '始点と終点が同じ路。同じ節点を通らない閉路 = <strong>単純閉路</strong>。', 'CYCLE'),
           card('連結', '節点集合 V の任意の 2 点間に路が存在すること。', 'CONNECTED'),
           card('連結成分', '連結している節点集合。グラフの連結成分は<strong>一意に定まる</strong>。', 'COMPONENT')),
+        talk(`R: 「単純閉路を数えよ」って問題、どうやって数えればいいんですか？ 1→2→3→1 と 2→3→1→2 って同じですよね。
+S: そう、<b>節点の集合が同じなら同じ閉路</b>として 1 個と数える。向きを逆にした 1→3→2→1 も同じ。
+R: 長さ 3 なら「3 点が全部つながっている三角形」を探せばいいのか。
+S: その通り。<b>最長の単純閉路</b>は、全部の節点を 1 回ずつ通って戻れるかをまず疑うといい。下のラボで、自分で路をなぞりながら確かめてみて。自分のグラフも「0-1 1-2 …」の形で入れられるよ。`),
+        pathLab(),
         point('グラフ ＝ <b>節点集合 V ＋ 辺集合 E</b>。無向・有向・重み付き。無向グラフの辺数は<b>線分の数 × 2</b>。'),
       ),
     },
@@ -524,6 +614,10 @@ S: 方法 3 は子のリストを連結リストで持つ。連結リストの�
           ['2: 配列リスト改', 'p[i] 親, l[i] 長男, r[i] 次の兄弟', 'O(1)', 'O(1)', 'O(n)'],
           ['3: 連結リスト', 'p[i] 親, S[i] 子リスト先頭, 連結リスト cᵢ', 'O(1)', 'O(1)', 'O(n)'],
         ], (c, r, ci) => (ci >= 2 ? (c === 'O(1)' ? 'o1' : ci === 3 ? 'on' : 'mid') : ''))),
+        talk(`R: 「節点 v の先祖の節点数」って聞かれたら、親とその上だけ数えればいいですよね？
+S[oops]: ここ、<b>一番の引っかけ</b>。講義の定義では<b>先祖にも子孫にも自分自身を含む</b>んだ。スライドの例でも「節点 2 の先祖 = 節点 0, 2」になってる。
+R: じゃあ葉の子孫の数は…
+S: 自分だけだから <b>1</b>。根の先祖の数も <b>1</b>。ラボで節点をクリックすると、先祖と子孫の欄に自分も入ってるのがわかるよ。`),
         point('木 ＝ <b>閉路を持たない</b>グラフ。根付き木は根がただ 1 つ。<b>先祖・子孫は自分自身を含む</b>。深さ＝根からの辺数、高さ＝その最大値。'),
       ),
     },
@@ -548,6 +642,8 @@ R: 子が 1 つしかないときも、それが左か右かは区別するん�
 S: そう。で、2 つ目の探索が<b>深さ優先探索</b>。「木のなぞり」とも言う。<b>子を優先して</b>深く潜っていく。
 R: 前順・中順・後順っていう 3 種類がありましたけど、何が違うのか毎回混乱するんです…。
 S: ここが今日一番のポイント。<b>たどる道筋は 3 つとも全く同じ</b>。木の周りを、外側から一筆書きでぐるっと回る感じ。違うのは<b>何回目に通ったときに「探索（出力）」するか</b>だけなんだ。`),
+        talk(`R: 深さ優先探索って、2 分木じゃない普通の順序木でもできるんですか？
+S: できるよ。スライドの例だと、根 0 の子が 1, 2, 3、節点 2 の子が 4, 5。巡回は <span class="inline-code">0→1→0→2→4→2→5→2→0→3→0</span>。ここから前順は 0 1 2 4 5 3、中順は 1 0 4 2 5 3、後順は 1 4 5 2 3 0。講義では 2 分木で詳しくやるから、下も 2 分木で見ていこう。`),
         cols(3,
           card('前順（行きがけ順）', '<strong>最初</strong>に通ったときに出力。<br><span class="mono">自分 → 左 → 右</span>', 'PREORDER'),
           card('中順（通りがけ順）', '原則 <strong>2 回目</strong>に通ったときに出力（左の子がなければ 1 回目）。<br><span class="mono">左 → 自分 → 右</span>', 'INORDER', 'accent'),
