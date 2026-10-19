@@ -16,6 +16,7 @@ export function h(tag, attrs, ...kids) {
     if (v == null || v === false) continue
     if (k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(), v)
     else if (k === 'html') el.innerHTML = v
+    else if (k === 'class') String(v).split(/\s+/).filter(Boolean).forEach((c) => el.classList.add(c))
     else if (k === 'style' && typeof v === 'object') Object.entries(v).forEach(([sk, sv]) => (sk.startsWith('--') ? el.style.setProperty(sk, sv) : (el.style[sk] = sv)))
     else el.setAttribute(k, v === true ? '' : v)
   }
@@ -98,10 +99,42 @@ export const store = {
   set(k, v) { const a = this.all(); a[k] = v; localStorage.setItem(KEY, JSON.stringify(a)) },
 }
 
-export function toast(msg) {
-  const t = h('div.toast', msg)
-  document.body.appendChild(t)
-  setTimeout(() => t.remove(), 1800)
+/**
+ * toast(msg, opt?) — 積み重なる通知
+ *   opt: 'ok'|'ng'|'info' もしくは { type, action:{label, fn}, duration, html }
+ *   ・サカイ先輩のアバター付き / 残り時間バー / ホバーで一時停止 / 横スワイプで消せる
+ */
+const TOAST_MOOD = { ok: 'happy', ng: 'oops', info: 'normal', warn: 'think' }
+export function toast(msg, opt = {}) {
+  const o = typeof opt === 'string' ? { type: opt } : opt
+  const type = o.type || 'info'
+  const dur = o.duration ?? (o.action ? 5000 : 2600)
+  let stack = document.getElementById('toast-stack')
+  if (!stack) { stack = h('div#toast-stack', { role: 'status', 'aria-live': 'polite' }); document.body.appendChild(stack) }
+  while (stack.children.length >= 3) stack.firstElementChild.remove()
+  const bar = h('i.toast-bar', { style: { animationDuration: dur + 'ms' } })
+  const t = h(`div.toast.t-${type}`,
+    h('span.toast-av', { 'aria-hidden': 'true', html: avatar('S', TOAST_MOOD[type] || 'normal') }),
+    h('span.toast-msg', o.html ? { html: msg } : msg),
+    o.action ? h('button.toast-act', { onclick: () => { o.action.fn(); close() } }, o.action.label) : null,
+    h('button.toast-x', { 'aria-label': '閉じる', onclick: () => close() }, '×'),
+    bar)
+  let gone = false
+  const close = (dir = 0) => {
+    if (gone) return; gone = true
+    t.style.setProperty('--out', dir ? `${dir * 120}%` : '0px'); t.style.setProperty('--outy', dir ? '0px' : '14px')
+    t.classList.add('out')
+    setTimeout(() => t.remove(), 320)
+  }
+  bar.addEventListener('animationend', () => close())
+  // swipe to dismiss
+  let x0 = null, dx = 0
+  t.addEventListener('pointerdown', (e) => { if (e.target.closest('button')) return; x0 = e.clientX; dx = 0; t.setPointerCapture(e.pointerId); t.classList.add('drag') })
+  t.addEventListener('pointermove', (e) => { if (x0 == null) return; dx = e.clientX - x0; t.style.translate = `${dx}px 0`; t.style.opacity = String(1 - Math.min(1, Math.abs(dx) / 220)) })
+  const up = () => { if (x0 == null) return; x0 = null; t.classList.remove('drag'); if (Math.abs(dx) > 80) close(Math.sign(dx)); else { t.style.translate = ''; t.style.opacity = '' } }
+  t.addEventListener('pointerup', up); t.addEventListener('pointercancel', up)
+  stack.appendChild(t)
+  return { close }
 }
 
 // ---------- Lab frame ----------
