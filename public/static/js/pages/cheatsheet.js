@@ -28,6 +28,15 @@ const ROWS = [
   [4, '順序木', '方法2・3', '幅優先 / 深さ優先探索', 'O(n)'],
   [4, '2 分木', '配列（p, l, r）', '親 / 子', 'O(1) / O(1)'],
   [4, '2 分木', '連結リスト', '親 / 子（位置不明）', 'O(1) / O(n)'],
+  [5, '集合', '配列リスト', 'MEMBER / INSERT / DELETE', 'O(1)'],
+  [5, '集合', '配列リスト', 'UNION 等 / 空間', 'O(|Z|)'],
+  [5, '集合', '連結リスト', 'MEMBER / INSERT / DELETE', 'O(|A|)'],
+  [5, '集合', '連結リスト', 'UNION / INTERSECTION / DIFFERENCE', 'O(|A||B|)'],
+  [5, '集合', '連結リスト', '空間', 'O(|A|)'],
+  [5, '辞書', '外部ハッシュ法', 'MEMBER / INSERT / DELETE（最悪）', 'O(|A|)'],
+  [5, '辞書', '外部ハッシュ法', 'MEMBER / INSERT / DELETE（平均・一様）', 'O(1)'],
+  [5, '辞書', '内部ハッシュ法', 'MEMBER / INSERT / DELETE（最悪）', 'O(|A|)'],
+  [5, '辞書', '内部ハッシュ法', 'MEMBER / INSERT / DELETE（平均・一様）', 'O(1/(1−α))'],
 ]
 const ALGOS = [
   [1, '線形探索', '最悪・平均', 'O(n)'],
@@ -37,7 +46,7 @@ const ALGOS = [
   [2, 'フィボナッチ（ループ）', '—', 'O(n)'],
   [2, 'フィボナッチ（単純な再帰）', '—', '指数時間（O(2ⁿ)）'],
 ]
-const cls = (c) => (/^O\(1\)$/.test(c) ? 'o1' : /O\(1\) \/ O\(1\)/.test(c) ? 'o1' : /2ⁿ|n²|O\(K\)/.test(c) ? 'on' : c.startsWith('O(') || c.startsWith('指') ? 'mid' : '')
+const cls = (c) => (/^O\(1\)$|^O\(1\/\(1/.test(c) ? 'o1' : /O\(1\) \/ O\(1\)/.test(c) ? 'o1' : /2ⁿ|n²|O\(K\)/.test(c) ? 'on' : c.startsWith('O(') || c.startsWith('指') ? 'mid' : '')
 
 export function renderCheatsheet(root, LECTURES) {
   const max = Math.max(...LECTURES.map((l) => l.n))

@@ -89,7 +89,7 @@ S: 口で言うより見たほうが早い。第1回から一緒に動かして�
     siteStats([
       [LECTURES.length, '講義', '<svg viewBox="0 0 40 40"><rect x="7" y="6" width="26" height="30" rx="5" fill="#fff" stroke="#3d2e54" stroke-width="2.5"/><path d="M13 15h14M13 21h14M13 27h8" stroke="#3d2e54" stroke-width="2.5" stroke-linecap="round"/></svg>', 'c1'],
       [LECTURES.reduce((a, l) => a + l.chapters.length, 0), '章', '<svg viewBox="0 0 40 40"><path d="M6 10h11l3 4h14v18H6z" fill="#fff" stroke="#3d2e54" stroke-width="2.5" stroke-linejoin="round"/></svg>', 'c2'],
-      [24, '可視化ラボ', '<svg viewBox="0 0 40 40"><circle cx="11" cy="28" r="5" fill="#ff8a3d" stroke="#3d2e54" stroke-width="2.5"/><circle cx="29" cy="28" r="5" fill="#fff" stroke="#3d2e54" stroke-width="2.5"/><circle cx="20" cy="11" r="5" fill="#3fa9f5" stroke="#3d2e54" stroke-width="2.5"/><path d="M14 24l4-8M26 24l-4-8M16 28h8" stroke="#3d2e54" stroke-width="2.5"/></svg>', 'c3'],
+      [30, '可視化ラボ', '<svg viewBox="0 0 40 40"><circle cx="11" cy="28" r="5" fill="#ff8a3d" stroke="#3d2e54" stroke-width="2.5"/><circle cx="29" cy="28" r="5" fill="#fff" stroke="#3d2e54" stroke-width="2.5"/><circle cx="20" cy="11" r="5" fill="#3fa9f5" stroke="#3d2e54" stroke-width="2.5"/><path d="M14 24l4-8M26 24l-4-8M16 28h8" stroke="#3d2e54" stroke-width="2.5"/></svg>', 'c3'],
       [LECTURES.reduce((a, l) => a + l.quiz.length, 0), '類題', '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#fff" stroke="#3d2e54" stroke-width="2.5"/><path d="M16 16a4 4 0 1 1 5 4c-1 .5-1 1.5-1 3" stroke="#3d2e54" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="20" cy="28" r="1.8" fill="#3d2e54"/></svg>', 'c4'],
     ]))
 
