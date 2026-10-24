@@ -45,6 +45,7 @@
 類題は講義内容から作成したオリジナル問題（課題レポートの問題そのものではない）。
 
 ## URL / ルート
+- GitHub: https://github.com/2525Azarashi/datastructuresandalgorithms
 - `/#/` ホーム ・ `/#/lecture/:n` 各回 ・ `/#/lecture/:n?a=<章ID>` 章へ直接 ・ `/#/cheatsheet` ・ `/#/glossary`
 
 ## 講義の追加方法（次回以降）
