@@ -89,7 +89,7 @@ S: 口で言うより見たほうが早い。第1回から一緒に動かして�
     siteStats([
       [LECTURES.length, '講義', '<svg viewBox="0 0 40 40"><rect x="7" y="6" width="26" height="30" rx="5" fill="#fff" stroke="#3d2e54" stroke-width="2.5"/><path d="M13 15h14M13 21h14M13 27h8" stroke="#3d2e54" stroke-width="2.5" stroke-linecap="round"/></svg>', 'c1'],
       [LECTURES.reduce((a, l) => a + l.chapters.length, 0), '章', '<svg viewBox="0 0 40 40"><path d="M6 10h11l3 4h14v18H6z" fill="#fff" stroke="#3d2e54" stroke-width="2.5" stroke-linejoin="round"/></svg>', 'c2'],
-      [30, '可視化ラボ', '<svg viewBox="0 0 40 40"><circle cx="11" cy="28" r="5" fill="#ff8a3d" stroke="#3d2e54" stroke-width="2.5"/><circle cx="29" cy="28" r="5" fill="#fff" stroke="#3d2e54" stroke-width="2.5"/><circle cx="20" cy="11" r="5" fill="#3fa9f5" stroke="#3d2e54" stroke-width="2.5"/><path d="M14 24l4-8M26 24l-4-8M16 28h8" stroke="#3d2e54" stroke-width="2.5"/></svg>', 'c3'],
+      [36, '可視化ラボ', '<svg viewBox="0 0 40 40"><circle cx="11" cy="28" r="5" fill="#ff8a3d" stroke="#3d2e54" stroke-width="2.5"/><circle cx="29" cy="28" r="5" fill="#fff" stroke="#3d2e54" stroke-width="2.5"/><circle cx="20" cy="11" r="5" fill="#3fa9f5" stroke="#3d2e54" stroke-width="2.5"/><path d="M14 24l4-8M26 24l-4-8M16 28h8" stroke="#3d2e54" stroke-width="2.5"/></svg>', 'c3'],
       [LECTURES.reduce((a, l) => a + l.quiz.length, 0), '類題', '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="#fff" stroke="#3d2e54" stroke-width="2.5"/><path d="M16 16a4 4 0 1 1 5 4c-1 .5-1 1.5-1 3" stroke="#3d2e54" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="20" cy="28" r="1.8" fill="#3d2e54"/></svg>', 'c4'],
     ]))
 
@@ -103,6 +103,7 @@ S: 口で言うより見たほうが早い。第1回から一緒に動かして�
     h('div.sec-head.reveal', h('div', h('div.eyebrow', 'Tools'), h('h2', 'Handy ', h('span.squig', 'tools')))),
     h('div.tools-grid.reveal',
       h('a.tool-card', { href: '#/cheatsheet' }, h('div.glyph', 'O(1)  O(log n)  O(n)'), h('div', h('h3', '計算量表'), h('p', '全データ構造の操作コストを一枚に。回が進むごとに自動で増えます。'))),
+      h('a.tool-card', { href: '#/answers' }, h('div.glyph', 'Q → A ✓'), h('div', h('h3', '課題の解説'), h('p', '各回の課題レポートの答えと、2 人の対話で解き方を解説。答えをかくして自習もできます。'))),
       h('a.tool-card', { href: '#/glossary' }, h('div.glyph', 'A → Z'), h('div', h('h3', '用語集'), h('p', '講義に出てきた用語を検索。定義の載っている章へ一発で飛べます。'))),
       h('button.tool-card', { style: { textAlign: 'left', cursor: 'pointer', font: 'inherit', color: 'inherit' }, onclick: () => import('./palette.js').then((m) => m.openPalette()) }, h('div.glyph', '⌘K  /'), h('div', h('h3', 'クイック検索'), h('p', '章・用語・可視化にキーボードだけで移動。どのページからでも使えます。')))))
 

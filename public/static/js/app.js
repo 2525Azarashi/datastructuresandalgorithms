@@ -6,6 +6,7 @@ import { renderHome } from './pages/home.js'
 import { renderLecture } from './pages/lecture.js'
 import { renderCheatsheet } from './pages/cheatsheet.js'
 import { renderGlossary } from './pages/glossary.js'
+import { renderAnswers } from './pages/answers.js'
 import { openPalette } from './pages/palette.js'
 import { sheet, closeSheet, skeleton, pullToRefresh } from './lib/patterns.js'
 import { toast } from './lib/ui.js'
@@ -22,6 +23,7 @@ function header() {
       h('a.hide-sm', { href: '#/', 'data-nav': 'home' }, '講義'),
       h('a.hide-sm', { href: '#/cheatsheet', 'data-nav': 'cheatsheet' }, '計算量表'),
       h('a.hide-sm', { href: '#/glossary', 'data-nav': 'glossary' }, '用語集'),
+      h('a.hide-sm', { href: '#/answers', 'data-nav': 'answers' }, '課題解説'),
       h('button.nav-search', { onclick: openPalette, 'aria-label': '検索' }, h('span.lbl', '検索'), h('kbd', '⌘K')),
       h('button.nav-menu.show-sm', { onclick: openMenu, 'aria-label': 'メニューを開く', 'aria-haspopup': 'dialog', html: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>' })),
     h('div.progress-bar'))
@@ -37,7 +39,8 @@ function openMenu() {
       h('div.menu-grid',
         link('#/', 'ホーム', '講義一覧', '<svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9H4z" fill="#ffe0cc" stroke="#3d2e54" stroke-width="2" stroke-linejoin="round"/></svg>'),
         link('#/cheatsheet', '計算量表', 'O(…) を一枚に', '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" fill="#d8eeff" stroke="#3d2e54" stroke-width="2"/><path d="M8 15l3-4 2 2 3-5" fill="none" stroke="#3d2e54" stroke-width="2"/></svg>'),
-        link('#/glossary', '用語集', 'スワイプで暗記', '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3" fill="#d3f5e2" stroke="#3d2e54" stroke-width="2"/><path d="M9 8h6M9 12h6" stroke="#3d2e54" stroke-width="2"/></svg>')),
+        link('#/glossary', '用語集', 'スワイプで暗記', '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3" fill="#d3f5e2" stroke="#3d2e54" stroke-width="2"/><path d="M9 8h6M9 12h6" stroke="#3d2e54" stroke-width="2"/></svg>'),
+        link('#/answers', '課題の解説', '答えと解き方', '<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3" fill="#ebe2ff" stroke="#3d2e54" stroke-width="2"/><path d="M8 12l3 3 5-6" fill="none" stroke="#3d2e54" stroke-width="2.2" stroke-linecap="round"/></svg>')),
       h('div.menu-k', '講義'),
       h('div.menu-lecs', LECTURES.map((l) => {
         const p = quizProgress('lec' + l.n, l.quiz.length)
@@ -62,7 +65,7 @@ function footer() {
     h('div', `${LECTURES.length} lectures · made with ♥ for intuition`)))
 }
 
-const kindOf = (path) => (/^\/lecture\//.test(path) ? 'lecture' : path === '/glossary' ? 'glossary' : path === '/cheatsheet' ? 'cheatsheet' : 'home')
+const kindOf = (path) => (/^\/lecture\//.test(path) ? 'lecture' : path === '/glossary' ? 'glossary' : path === '/cheatsheet' ? 'cheatsheet' : path === '/answers' ? 'glossary' : 'home')
 const curPath = () => (location.hash.replace(/^#/, '') || '/').split('?a=')[0]
 // Skeleton Screen: 描画前に骨組みを出す
 function showSkeleton(path) {
@@ -93,15 +96,16 @@ function route() {
     else cleanup = renderHome(page, LECTURES, UPCOMING)
   } else if (path === '/cheatsheet') { cleanup = renderCheatsheet(page, LECTURES); nav = 'cheatsheet' }
   else if (path === '/glossary') { cleanup = renderGlossary(page, LECTURES); nav = 'glossary' }
+  else if (path === '/answers') { cleanup = renderAnswers(page, LECTURES, anchor); nav = 'answers' }
   else cleanup = renderHome(page, LECTURES, UPCOMING)
   $$('[data-nav]').forEach((a) => a.classList.toggle('active', a.dataset.nav === nav))
   typeset(page)
   observeReveal(page)
   kinetic(page)
-  if (anchor) requestAnimationFrame(() => document.getElementById(anchor)?.scrollIntoView())
+  if (anchor && path !== '/answers') requestAnimationFrame(() => document.getElementById(anchor)?.scrollIntoView())
   else scrollTo({ top: 0, behavior: 'instant' })
   onScroll()
-  document.title = (m ? `第${m[1]}回 · ` : path === '/cheatsheet' ? '計算量表 · ' : path === '/glossary' ? '用語集 · ' : '') + 'DS&A Lab — データ構造とアルゴリズム'
+  document.title = (m ? `第${m[1]}回 · ` : path === '/cheatsheet' ? '計算量表 · ' : path === '/glossary' ? '用語集 · ' : path === '/answers' ? '課題の解説 · ' : '') + 'DS&A Lab — データ構造とアルゴリズム'
 }
 
 addEventListener('keydown', (e) => {

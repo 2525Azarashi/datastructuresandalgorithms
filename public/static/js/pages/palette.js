@@ -10,6 +10,8 @@ export function openPalette() {
     { t: '講義一覧（ホーム）', g: 'ページ', href: '#/' },
     { t: '計算量表', g: 'ページ', href: '#/cheatsheet' },
     { t: '用語集', g: 'ページ', href: '#/glossary' },
+    { t: '課題の解説', g: 'ページ', href: '#/answers' },
+    ...LECTURES.map((l) => ({ t: `第${l.n}回 課題レポートの解説`, g: '課題', href: `#/answers?a=r${l.n}` })),
     ...LECTURES.flatMap((l) => [
       { t: `第${l.n}回 ${l.title}`, g: '講義', href: `#/lecture/${l.n}` },
       ...l.chapters.map((c) => ({ t: c.title, g: `第${l.n}回`, href: `#/lecture/${l.n}?a=${c.id}` })),

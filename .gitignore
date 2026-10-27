@@ -36,3 +36,7 @@ lerna-debug.log*
 .dev.vars
 *.log
 shots/
+
+# crash dumps
+core
+core.*

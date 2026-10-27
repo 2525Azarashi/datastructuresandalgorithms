@@ -41,6 +41,7 @@ export function renderLecture(root, lec, ALL) {
   })
   const idx = ALL.indexOf(lec)
   const prev = ALL[idx - 1], next = ALL[idx + 1]
+  content.appendChild(h('a.ans-banner', { href: `#/answers?a=r${lec.n}` }, h('span.ans-banner-av', { html: avatar('S', 'happy') }), h('span', h('small', 'REPORT'), h('b', `第${lec.n}回 課題レポートの解説を見る`)), h('span.arr', '→')))
   content.appendChild(h('div.pager',
     prev ? h('a', { href: `#/lecture/${prev.n}` }, h('span.k', '← まえの回'), h('span.t', `第${prev.n}回 ${prev.title}`)) : null,
     next ? h('a.next', { href: `#/lecture/${next.n}` }, h('span.k', 'つぎの回 →'), h('span.t', `第${next.n}回 ${next.title}`)) : h('a.next', { href: '#/' }, h('span.k', 'もくじ →'), h('span.t', '講義一覧へ戻る'))))
