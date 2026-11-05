@@ -1557,3 +1557,20 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--rose); }
 .ic-log { fill: none; stroke: var(--lime); stroke-width: 3.5; stroke-linecap: round; }
 .h-ax.lin { fill: var(--rose-t); font-family: var(--f-jp); } .h-ax.log { fill: var(--lime-t); font-family: var(--f-jp); }
 .chip.new { animation: pop .45s var(--spring) both; }
+
+/* =========================================================
+   LECTURE 7 — 2分探索木・AVL木
+   ========================================================= */
+.bst-svg { width: 100%; height: auto; overflow: visible; }
+.bst-svg .node { transition: transform .55s var(--spring), opacity .35s; }
+.bst-svg .node.born { opacity: 0; }
+.bst-svg .edge { transition: none; animation: edgeIn .45s ease both; }
+@keyframes edgeIn { from { opacity: 0; } to { opacity: 1; } }
+.bst-svg .tidx { font-family: var(--f-mono); font-size: 9.5px; font-weight: 500; fill: var(--mute); text-anchor: middle; dominant-baseline: central; }
+.bst-svg .tbf { font-family: var(--f-mono); font-size: 10.5px; font-weight: 700; fill: var(--violet, #7a5cff); text-anchor: middle; }
+.bst-svg .tbf.ng { fill: var(--rose-t); font-size: 12px; }
+.mono-out b { font-family: var(--f-mono); }
+.pat-badge { justify-self: start; font-family: var(--f-mono); font-weight: 900; font-size: 20px; padding: 6px 16px; border: var(--bd); border-radius: 999px; background: var(--lemon); box-shadow: var(--sh-s); animation: pop .4s var(--spring); }
+.hbar.lin { fill: var(--rose); } .hbar.mid { fill: var(--amber); } .hbar.log { fill: var(--lime); }
+.h-ax.mid { fill: var(--amber-t, #b85c00); font-family: var(--f-jp); }
+@media (prefers-reduced-motion: reduce) { .bst-svg .node { transition: none; } }
