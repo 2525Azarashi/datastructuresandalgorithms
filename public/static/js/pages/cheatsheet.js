@@ -45,6 +45,8 @@ const ROWS = [
   [7, '順序付き集合', '2分探索木', 'MEMBER / INSERT / DELETE / MIN', 'O(h)（最悪 O(n)）'],
   [7, '順序付き集合', '2分探索木（ランダム挿入）', '高さ h', '平均 O(log n)'],
   [7, '順序付き集合', 'AVL木', 'MEMBER / INSERT / DELETE / MIN', 'O(log n)'],
+  [9, '最大ヒープ', '配列（子 2i+1, 2i+2）', 'INSERT / DELETEMAX', 'O(log n)'],
+  [9, '最大ヒープ', '配列（子 2i+1, 2i+2）', 'DOWNMAX(i, A)（部分木の高さ h′_i）', 'O(h′_i)'],
 ]
 const ALGOS = [
   [1, '線形探索', '最悪・平均', 'O(n)'],
@@ -61,6 +63,9 @@ const ALGOS = [
   [8, '挿入ソート', '最良（正順入力）', 'O(n)'],
   [8, 'シェルソート（挿入ソートの改良）', '最悪 / 平均 / 最良', 'O(n log² n) / O(n^1.25) / O(n)'],
   [8, '選択ソート', '最悪・平均・最良（安定：無）', 'O(n²)'],
+  [9, 'ヒープの構成（簡易版：順次 INSERT）', '—', 'O(n log n)'],
+  [9, 'ヒープの構成（Heapify：逆順 DOWNMAX）', '—', 'O(n)'],
+  [9, 'ヒープソート（最大ヒープ＋Heapify）', '最悪・平均・最良（安定：無）', 'O(n log n)'],
 ]
 const cls = (c) => (/^O\(1\)$|^O\(1\/\(1/.test(c) ? 'o1' : /O\(1\) \/ O\(1\)/.test(c) ? 'o1' : /2ⁿ|n²|O\(K\)/.test(c) ? 'on' : c.startsWith('O(') || c.startsWith('指') ? 'mid' : '')
 
