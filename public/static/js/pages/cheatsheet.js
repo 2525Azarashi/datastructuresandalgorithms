@@ -66,6 +66,9 @@ const ALGOS = [
   [9, 'ヒープの構成（簡易版：順次 INSERT）', '—', 'O(n log n)'],
   [9, 'ヒープの構成（Heapify：逆順 DOWNMAX）', '—', 'O(n)'],
   [9, 'ヒープソート（最大ヒープ＋Heapify）', '最悪・平均・最良（安定：無）', 'O(n log n)'],
+  [10, 'PARTITION 操作（Lomuto法 / Hoare法）', '要素数 L = r − l + 1', 'O(L)'],
+  [10, 'クイックソート', '最悪（毎回最小・最大ピボット／安定：無）', 'O(n²)'],
+  [10, 'クイックソート', '平均・最良（安定：無）', 'O(n log n)'],
 ]
 const cls = (c) => (/^O\(1\)$|^O\(1\/\(1/.test(c) ? 'o1' : /O\(1\) \/ O\(1\)/.test(c) ? 'o1' : /2ⁿ|n²|O\(K\)/.test(c) ? 'on' : c.startsWith('O(') || c.startsWith('指') ? 'mid' : '')
 

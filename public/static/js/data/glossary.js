@@ -113,4 +113,11 @@ export const GLOSSARY = [
   ['DOWNMAX', 'DOWNMAX(i, A)', '節点 i を根とする部分木に対し、親と大きい方の子を比較・交換しながら下に向かって最大ヒープ条件を回復する操作。部分木の高さ h′_i に対し O(h′_i)。', 9, 'maxheap'],
   ['ヒープの構成（簡易版）', 'naive heap construction', '配列 a の要素を i = 0 から n−1 まで順番に最大ヒープへ挿入していく方法。高さが高いときの挿入が多く、時間計算量は O(n log₂ n)。', 9, 'naive-build'],
   ['Heapify', 'heapify (bottom-up build)', '最後尾の親 i = ⌊n/2⌋−1 から i = 0 まで逆順に DOWNMAX(i, A) を実行して配列全体を最大ヒープ化する方法。高さの低い部分木への操作が多く、時間計算量は O(n)。', 9, 'heapify'],
+  ['クイックソート', 'quicksort', '基準要素（ピボット）p を選び、配列を A(< p)・B(= p)・C(≥ p) の 3 部分に分割する PARTITION を再帰的に繰り返す整列法。最悪 O(n²)、平均・最良 O(n log₂ n)、安定性「無」。', 10, 'intro'],
+  ['ピボット', 'pivot', 'PARTITION 操作で分割の基準として選ぶ要素 p。毎回中央値に近い要素が選ばれると再帰の深さが O(log₂ n) となり効率が良くなる。', 10, 'intro'],
+  ['PARTITION 操作', 'partition', '配列の範囲 a[l..r] をピボット p より小さい部分 A・ピボット自身の部分 B(a[q]=p)・p 以上の部分 C に並べ替え、格納位置 q を返す操作。O(L)。', 10, 'lomuto'],
+  ['Lomuto 法', 'Lomuto partition scheme', '右端 p = a[r] をピボットとし、i = l−1, j = l..r−1 を左から走査して a[j] < p のとき i++, swap(a[i], a[j]) を行い、最後に q = i+1 と a[r] を交換する PARTITION 実現法。全要素等しいと偏る。', 10, 'lomuto'],
+  ['Hoare 法', 'Hoare partition scheme', '提案者 Hoare による PARTITION 実現法。左から i++（< p の間）、右から j--（> p の間）で挟み撃ちにして交換し、i > j で抜ける。全要素が等しい場合も中央で均等分割される。', 10, 'hoare'],
+  ['3要素の中央値', 'median-of-three', '左端・右端・真中の 3 要素の中央値をピボットとして選ぶ工夫。整列済み入力で最悪 O(n²) になるのを回避でき、意図的に最悪入力を作るのも難しくなる。', 10, 'complexity'],
+  ['乱択アルゴリズム', 'randomized algorithm', '実行手順の中に乱数によるランダムな選択を含むアルゴリズム。ピボットをランダムに選ぶ乱択クイックソートでは、意図的に最悪入力を作ることは事実上不可能になる（運が悪ければ O(n²)）。', 10, 'complexity'],
 ]

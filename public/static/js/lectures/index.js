@@ -8,10 +8,11 @@ import lec6 from './lec06.js'
 import lec7 from './lec07.js'
 import lec8 from './lec08.js'
 import lec9 from './lec09.js'
+import lec10 from './lec10.js'
 
-export const LECTURES = [lec1, lec2, lec3, lec4, lec5, lec6, lec7, lec8, lec9]
+export const LECTURES = [lec1, lec2, lec3, lec4, lec5, lec6, lec7, lec8, lec9, lec10]
 
 // 講義資料がまだ届いていない回（目次のプレースホルダ）
 export const UPCOMING = [
-  { n: 10, title: '次回の講義資料を追加すると、ここに展開されます' },
+  { n: 11, title: '次回の講義資料を追加すると、ここに展開されます' },
 ]
